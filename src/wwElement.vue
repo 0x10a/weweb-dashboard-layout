@@ -6,7 +6,9 @@
             <div class="ww-sidebar-header">
                 <div class="ww-logo-area">
                     <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }" v-html="logoIconHtml"></div>
+                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
+                        <component :is="getIcon(content.logoIcon)" :size="24" />
+                    </div>
                     <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
                         {{ content.logoText }}
                     </span>
@@ -27,14 +29,15 @@
                             :style="getNavItemStyle(item)"
                             @click="handleItemClick(item, index)"
                         >
-                            <span class="ww-nav-icon" v-html="getIconHtml(item.icon)"></span>
+                            <component :is="getIcon(item.icon)" :size="18" class="ww-nav-icon" />
                             <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-                            <span
+                            <component
                                 v-if="!isCollapsedState && item.children && item.children.length"
+                                :is="ChevronRight"
+                                :size="14"
                                 class="ww-nav-arrow"
                                 :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
-                                v-html="chevronRightHtml"
-                            ></span>
+                            />
                             <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                                 {{ item.badge }}
                             </span>
@@ -77,7 +80,7 @@
                         <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
                         <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
                     </div>
-                    <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" v-html="moreVerticalHtml"></span>
+                    <component v-if="!isCollapsedState" :is="MoreVertical" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
                     
                     <!-- User Dropdown Menu -->
                     <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -95,12 +98,12 @@
                             class="ww-dropdown-item"
                             @click.stop="handleUserMenuClick(menuItem)"
                         >
-                            <span v-html="getIconHtml(menuItem.icon)"></span>
+                            <component :is="getIcon(menuItem.icon)" :size="16" />
                             <span>{{ menuItem.label }}</span>
                         </div>
                         <div class="ww-dropdown-divider"></div>
                         <div class="ww-dropdown-item" @click.stop="handleLogout">
-                            <span v-html="logOutHtml"></span>
+                            <component :is="LogOut" :size="16" />
                             <span>{{ content.logoutLabel }}</span>
                         </div>
                     </div>
@@ -114,11 +117,11 @@
             <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
                 <div class="ww-topbar-left">
                     <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-                        <span v-html="panelLeftHtml"></span>
+                        <component :is="PanelLeft" :size="18" />
                     </button>
 
                     <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-                        <span class="ww-search-icon" v-html="searchHtml"></span>
+                        <component :is="Search" :size="16" class="ww-search-icon" />
                         <input
                             type="text"
                             :placeholder="content.searchPlaceholder"
@@ -131,14 +134,14 @@
 
                 <div class="ww-topbar-right">
                     <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-                        <span v-html="bellHtml"></span>
+                        <component :is="Bell" :size="18" />
                         <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
                     </button>
                     <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-                        <span v-html="sunHtml"></span>
+                        <component :is="Sun" :size="18" />
                     </button>
                     <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-                        <span v-html="settingsHtml"></span>
+                        <component :is="Settings" :size="18" />
                     </button>
                     <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
                         <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -159,12 +162,12 @@
                                 class="ww-dropdown-item"
                                 @click.stop="handleUserMenuClick(menuItem)"
                             >
-                                <span v-html="getIconHtml(menuItem.icon)"></span>
+                                <component :is="getIcon(menuItem.icon)" :size="16" />
                                 <span>{{ menuItem.label }}</span>
                             </div>
                             <div class="ww-dropdown-divider"></div>
                             <div class="ww-dropdown-item" @click.stop="handleLogout">
-                                <span v-html="logOutHtml"></span>
+                                <component :is="LogOut" :size="16" />
                                 <span>{{ content.logoutLabel }}</span>
                             </div>
                         </div>
@@ -181,20 +184,96 @@
 </template>
 
 <script>
-import { ref, computed, watch, watchEffect } from 'vue';
+import { ref, computed, watch } from 'vue';
+import {
+    Layers, LayoutDashboard, ShoppingBag, TrendingUp, Users, BarChart2, Trello, Circle,
+    ChevronRight, MoreVertical, LogOut, PanelLeft, Search, Bell, Sun, Settings,
+    User, CreditCard, HelpCircle, Home, FileText, Calendar, Mail, MessageSquare,
+    Folder, Image, Video, Music, Database, Server, Cloud, Lock, Key, Shield,
+    Zap, Activity, PieChart, LineChart, Target, Award, Gift, Heart, Star,
+    Bookmark, Flag, Tag, Hash, AtSign, Link, Paperclip, Download, Upload,
+    Share, Send, Phone, MapPin, Navigation, Compass, Globe, Map
+} from 'lucide-vue-next';
+
+const iconMap = {
+    'layers': Layers,
+    'layout-dashboard': LayoutDashboard,
+    'shopping-bag': ShoppingBag,
+    'trending-up': TrendingUp,
+    'users': Users,
+    'bar-chart-2': BarChart2,
+    'trello': Trello,
+    'circle': Circle,
+    'chevron-right': ChevronRight,
+    'more-vertical': MoreVertical,
+    'log-out': LogOut,
+    'panel-left': PanelLeft,
+    'search': Search,
+    'bell': Bell,
+    'sun': Sun,
+    'settings': Settings,
+    'user': User,
+    'credit-card': CreditCard,
+    'help-circle': HelpCircle,
+    'home': Home,
+    'file-text': FileText,
+    'calendar': Calendar,
+    'mail': Mail,
+    'message-square': MessageSquare,
+    'folder': Folder,
+    'image': Image,
+    'video': Video,
+    'music': Music,
+    'database': Database,
+    'server': Server,
+    'cloud': Cloud,
+    'lock': Lock,
+    'key': Key,
+    'shield': Shield,
+    'zap': Zap,
+    'activity': Activity,
+    'pie-chart': PieChart,
+    'line-chart': LineChart,
+    'target': Target,
+    'award': Award,
+    'gift': Gift,
+    'heart': Heart,
+    'star': Star,
+    'bookmark': Bookmark,
+    'flag': Flag,
+    'tag': Tag,
+    'hash': Hash,
+    'at-sign': AtSign,
+    'link': Link,
+    'paperclip': Paperclip,
+    'download': Download,
+    'upload': Upload,
+    'share': Share,
+    'send': Send,
+    'phone': Phone,
+    'map-pin': MapPin,
+    'navigation': Navigation,
+    'compass': Compass,
+    'globe': Globe,
+    'map': Map,
+};
 
 export default {
     props: {
-        content: { type: Object, required: true },
-        wwElementState: { type: Object, required: true },
+        content: {
+            type: Object,
+            required: true,
+        },
+        uid: {
+            type: String,
+            required: true,
+        },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
     emits: ['trigger-event', 'update:content'],
     setup(props, { emit }) {
-        const { getIcon } = wwLib.useIcons();
-
         const isCollapsedState = ref(false);
         const activeItemId = ref('');
         const expandedItems = ref([]);
@@ -202,52 +281,13 @@ export default {
         const showTopbarMenu = ref(false);
         const searchQuery = ref('');
 
-        // Icon HTML refs
-        const logoIconHtml = ref(null);
-        const chevronRightHtml = ref(null);
-        const moreVerticalHtml = ref(null);
-        const logOutHtml = ref(null);
-        const panelLeftHtml = ref(null);
-        const searchHtml = ref(null);
-        const bellHtml = ref(null);
-        const sunHtml = ref(null);
-        const settingsHtml = ref(null);
-
-        // Placeholder SVG
-        const placeholderSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
-
-        // Load fixed icons
-        const loadFixedIcons = async () => {
-            try {
-                logoIconHtml.value = await getIcon(props.content.logoIcon || 'lucide/layers') || placeholderSvg;
-                chevronRightHtml.value = await getIcon('lucide/chevron-right') || placeholderSvg;
-                moreVerticalHtml.value = await getIcon('lucide/more-vertical') || placeholderSvg;
-                logOutHtml.value = await getIcon('lucide/log-out') || placeholderSvg;
-                panelLeftHtml.value = await getIcon('lucide/panel-left') || placeholderSvg;
-                searchHtml.value = await getIcon('lucide/search') || placeholderSvg;
-                bellHtml.value = await getIcon('lucide/bell') || placeholderSvg;
-                sunHtml.value = await getIcon('lucide/sun') || placeholderSvg;
-                settingsHtml.value = await getIcon('lucide/settings') || placeholderSvg;
-            } catch (error) {
-                console.error('Error loading icons:', error);
+        const getIcon = (name) => {
+            if (!name) return Circle;
+            let iconName = name;
+            if (name.includes('/')) {
+                iconName = name.split('/').pop();
             }
-        };
-
-        watchEffect(() => {
-            loadFixedIcons();
-        });
-
-        // Dynamic icon loader for menu items
-        const getIconHtml = (iconName) => {
-            if (!iconName) return placeholderSvg;
-            // Will be loaded asynchronously, return placeholder initially
-            let result = placeholderSvg;
-            getIcon(iconName.includes('/') ? iconName : `lucide/${iconName}`).then(html => {
-                result = html || placeholderSvg;
-            }).catch(() => {
-                result = placeholderSvg;
-            });
-            return result;
+            return iconMap[iconName] || Circle;
         };
 
         const layoutStyles = computed(() => ({
@@ -418,16 +458,16 @@ export default {
             handleNotificationClick,
             handleThemeToggle,
             handleSettingsClick,
-            getIconHtml,
-            logoIconHtml,
-            chevronRightHtml,
-            moreVerticalHtml,
-            logOutHtml,
-            panelLeftHtml,
-            searchHtml,
-            bellHtml,
-            sunHtml,
-            settingsHtml,
+            getIcon,
+            // Export icon components for template
+            ChevronRight,
+            MoreVertical,
+            LogOut,
+            PanelLeft,
+            Search,
+            Bell,
+            Sun,
+            Settings,
         };
     },
 };
@@ -475,11 +515,6 @@ export default {
     justify-content: center;
 }
 
-.ww-logo-icon :deep(svg) {
-    width: 24px;
-    height: 24px;
-}
-
 .ww-logo-text {
     font-weight: 600;
     font-size: 14px;
@@ -523,15 +558,7 @@ export default {
 }
 
 .ww-nav-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
-}
-
-.ww-nav-icon :deep(svg) {
-    width: 18px;
-    height: 18px;
 }
 
 .ww-nav-label {
@@ -541,13 +568,6 @@ export default {
 
 .ww-nav-arrow {
     transition: transform 0.2s ease;
-    display: flex;
-    align-items: center;
-}
-
-.ww-nav-arrow :deep(svg) {
-    width: 14px;
-    height: 14px;
 }
 
 .ww-nav-arrow.ww-rotated {
@@ -662,13 +682,7 @@ export default {
 }
 
 .ww-user-menu-btn {
-    display: flex;
-    align-items: center;
-}
-
-.ww-user-menu-btn :deep(svg) {
-    width: 16px;
-    height: 16px;
+    flex-shrink: 0;
 }
 
 .ww-user-dropdown,
@@ -743,11 +757,6 @@ export default {
     background-color: #f1f5f9;
 }
 
-.ww-dropdown-item :deep(svg) {
-    width: 16px;
-    height: 16px;
-}
-
 .ww-main-area {
     flex: 1;
     display: flex;
@@ -790,11 +799,6 @@ export default {
     color: #0f172a;
 }
 
-.ww-topbar-btn :deep(svg) {
-    width: 18px;
-    height: 18px;
-}
-
 .ww-notification {
     position: relative;
 }
@@ -819,14 +823,7 @@ export default {
 }
 
 .ww-search-icon {
-    display: flex;
-    align-items: center;
     color: #94a3b8;
-}
-
-.ww-search-icon :deep(svg) {
-    width: 16px;
-    height: 16px;
 }
 
 .ww-search-input {
