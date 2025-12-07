@@ -1,6 +1,6 @@
 {
     "name": "ww-dashboard-layout",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "repository": {
         "type": "git",
         "url": "https://github.com/0x10a/weweb-dashboard-layout"
@@ -9,7 +9,9 @@
         "build": "weweb build -- name=ww-dashboard-layout type=wwobject",
         "serve": "weweb serve"
     },
-    "dependencies": {},
+    "dependencies": {
+        "lucide-vue-next": "^0.454.0"
+    },
     "devDependencies": {
         "@weweb/cli": "latest"
     },

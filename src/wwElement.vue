@@ -6,7 +6,9 @@
             <div class="ww-sidebar-header">
                 <div class="ww-logo-area">
                     <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }" v-html="logoIconHtml"></div>
+                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
+                        <component :is="getIcon(content.logoIcon)" :size="24" />
+                    </div>
                     <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
                         {{ content.logoText }}
                     </span>
@@ -27,14 +29,15 @@
                             :style="getNavItemStyle(item)"
                             @click="handleItemClick(item, index)"
                         >
-                            <span class="ww-nav-icon" v-html="getIconHtml(item.icon)"></span>
+                            <component :is="getIcon(item.icon)" :size="18" class="ww-nav-icon" />
                             <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-                            <span
+                            <component
                                 v-if="!isCollapsedState && item.children && item.children.length"
+                                :is="ChevronRight"
+                                :size="14"
                                 class="ww-nav-arrow"
                                 :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
-                                v-html="chevronIcon"
-                            ></span>
+                            />
                             <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                                 {{ item.badge }}
                             </span>
@@ -77,7 +80,7 @@
                         <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
                         <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
                     </div>
-                    <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" v-html="moreIcon"></span>
+                    <component v-if="!isCollapsedState" :is="MoreVertical" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
                     
                     <!-- User Dropdown Menu -->
                     <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -95,12 +98,12 @@
                             class="ww-dropdown-item"
                             @click.stop="handleUserMenuClick(menuItem)"
                         >
-                            <span v-html="getIconHtml(menuItem.icon)"></span>
+                            <component :is="getIcon(menuItem.icon)" :size="16" />
                             <span>{{ menuItem.label }}</span>
                         </div>
                         <div class="ww-dropdown-divider"></div>
                         <div class="ww-dropdown-item" @click.stop="handleLogout">
-                            <span v-html="logoutIcon"></span>
+                            <component :is="LogOut" :size="16" />
                             <span>{{ content.logoutLabel }}</span>
                         </div>
                     </div>
@@ -113,10 +116,12 @@
             <!-- Top Bar -->
             <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
                 <div class="ww-topbar-left">
-                    <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse" v-html="panelIcon"></button>
+                    <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
+                        <component :is="PanelLeft" :size="18" />
+                    </button>
 
                     <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-                        <span class="ww-search-icon" v-html="searchIcon"></span>
+                        <component :is="Search" :size="16" class="ww-search-icon" />
                         <input
                             type="text"
                             :placeholder="content.searchPlaceholder"
@@ -129,11 +134,15 @@
 
                 <div class="ww-topbar-right">
                     <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-                        <span v-html="bellIcon"></span>
+                        <component :is="Bell" :size="18" />
                         <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
                     </button>
-                    <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle" v-html="sunIcon"></button>
-                    <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick" v-html="settingsIcon"></button>
+                    <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
+                        <component :is="Sun" :size="18" />
+                    </button>
+                    <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
+                        <component :is="Settings" :size="18" />
+                    </button>
                     <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
                         <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
 
@@ -153,12 +162,12 @@
                                 class="ww-dropdown-item"
                                 @click.stop="handleUserMenuClick(menuItem)"
                             >
-                                <span v-html="getIconHtml(menuItem.icon)"></span>
+                                <component :is="getIcon(menuItem.icon)" :size="16" />
                                 <span>{{ menuItem.label }}</span>
                             </div>
                             <div class="ww-dropdown-divider"></div>
                             <div class="ww-dropdown-item" @click.stop="handleLogout">
-                                <span v-html="logoutIcon"></span>
+                                <component :is="LogOut" :size="16" />
                                 <span>{{ content.logoutLabel }}</span>
                             </div>
                         </div>
@@ -176,27 +185,77 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
+import {
+    Layers, LayoutDashboard, ShoppingBag, TrendingUp, Users, BarChart2, Trello, Circle,
+    ChevronRight, MoreVertical, LogOut, PanelLeft, Search, Bell, Sun, Settings,
+    User, CreditCard, HelpCircle, Home, FileText, Calendar, Mail, MessageSquare,
+    Folder, Image, Video, Music, Database, Server, Cloud, Lock, Key, Shield,
+    Zap, Activity, PieChart, LineChart, Target, Award, Gift, Heart, Star,
+    Bookmark, Flag, Tag, Hash, AtSign, Link, Paperclip, Download, Upload,
+    Share, Send, Phone, MapPin, Navigation, Compass, Globe, Map
+} from 'lucide-vue-next';
 
-const ICONS = {
-    'layout-dashboard': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>',
-    'layers': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>',
-    'shopping-bag': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
-    'trending-up': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-    'users': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    'bar-chart-2': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>',
-    'trello': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><rect width="3" height="9" x="7" y="7"/><rect width="3" height="5" x="14" y="7"/></svg>',
-    'circle': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>',
-    'chevron-right': '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
-    'more-vertical': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>',
-    'log-out': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>',
-    'panel-left': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>',
-    'search': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
-    'bell': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
-    'sun': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
-    'settings': '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
-    'user': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-    'credit-card': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
-    'help-circle': '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
+const iconMap = {
+    'layers': Layers,
+    'layout-dashboard': LayoutDashboard,
+    'shopping-bag': ShoppingBag,
+    'trending-up': TrendingUp,
+    'users': Users,
+    'bar-chart-2': BarChart2,
+    'trello': Trello,
+    'circle': Circle,
+    'chevron-right': ChevronRight,
+    'more-vertical': MoreVertical,
+    'log-out': LogOut,
+    'panel-left': PanelLeft,
+    'search': Search,
+    'bell': Bell,
+    'sun': Sun,
+    'settings': Settings,
+    'user': User,
+    'credit-card': CreditCard,
+    'help-circle': HelpCircle,
+    'home': Home,
+    'file-text': FileText,
+    'calendar': Calendar,
+    'mail': Mail,
+    'message-square': MessageSquare,
+    'folder': Folder,
+    'image': Image,
+    'video': Video,
+    'music': Music,
+    'database': Database,
+    'server': Server,
+    'cloud': Cloud,
+    'lock': Lock,
+    'key': Key,
+    'shield': Shield,
+    'zap': Zap,
+    'activity': Activity,
+    'pie-chart': PieChart,
+    'line-chart': LineChart,
+    'target': Target,
+    'award': Award,
+    'gift': Gift,
+    'heart': Heart,
+    'star': Star,
+    'bookmark': Bookmark,
+    'flag': Flag,
+    'tag': Tag,
+    'hash': Hash,
+    'at-sign': AtSign,
+    'link': Link,
+    'paperclip': Paperclip,
+    'download': Download,
+    'upload': Upload,
+    'share': Share,
+    'send': Send,
+    'phone': Phone,
+    'map-pin': MapPin,
+    'navigation': Navigation,
+    'compass': Compass,
+    'globe': Globe,
+    'map': Map,
 };
 
 export default {
@@ -216,25 +275,14 @@ export default {
         const showTopbarMenu = ref(false);
         const searchQuery = ref('');
 
-        const chevronIcon = ICONS['chevron-right'];
-        const moreIcon = ICONS['more-vertical'];
-        const logoutIcon = ICONS['log-out'];
-        const panelIcon = ICONS['panel-left'];
-        const searchIcon = ICONS['search'];
-        const bellIcon = ICONS['bell'];
-        const sunIcon = ICONS['sun'];
-        const settingsIcon = ICONS['settings'];
-
-        const getIconHtml = (name) => {
-            if (!name) return ICONS['circle'];
+        const getIcon = (name) => {
+            if (!name) return Circle;
             let iconName = name;
             if (name.includes('/')) {
                 iconName = name.split('/').pop();
             }
-            return ICONS[iconName] || ICONS['circle'];
+            return iconMap[iconName] || Circle;
         };
-
-        const logoIconHtml = computed(() => getIconHtml(props.content.logoIcon || 'layers'));
 
         const layoutStyles = computed(() => ({
             '--layout-bg': props.content.sidebarBgColor || '#F4F4F6'
@@ -374,9 +422,12 @@ export default {
         };
 
         return {
+            // State
             isCollapsedState, activeItemId, expandedItems, showUserMenu, showTopbarMenu, searchQuery,
-            chevronIcon, moreIcon, logoutIcon, panelIcon, searchIcon, bellIcon, sunIcon, settingsIcon,
-            getIconHtml, logoIconHtml, layoutStyles, sidebarStyles, mainAreaStyle, contentAreaStyle,
+            // Icons
+            ChevronRight, MoreVertical, LogOut, PanelLeft, Search, Bell, Sun, Settings,
+            // Methods
+            getIcon, layoutStyles, sidebarStyles, mainAreaStyle, contentAreaStyle,
             topbarStyle, searchContainerStyle, badgeStyle, promoCardStyle, promoBtnStyle, menuSections,
             getNavItemStyle, getSubItemStyle, toggleCollapse, handleItemClick, handleSubItemClick,
             toggleUserMenu, handleUserMenuClick, handleLogout, handlePromoClick, handleSearch,
