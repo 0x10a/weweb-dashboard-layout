@@ -306,13 +306,11 @@ export default {
     getIcon(name) {
       if (!name) return LucideIcons.Circle;
 
-      // Remove "lucide/" prefix if present
       let iconName = name;
       if (name.includes('/')) {
         iconName = name.split('/').pop();
       }
 
-      // Convert kebab-case to PascalCase
       const pascalCase = iconName.split('-').map(word =>
         word.charAt(0).toUpperCase() + word.slice(1)
       ).join('');
@@ -320,7 +318,6 @@ export default {
       const icon = LucideIcons[pascalCase];
       if (icon) return icon;
 
-      // Fallback to Circle
       return LucideIcons.Circle;
     },
     
@@ -436,7 +433,6 @@ export default {
 </script>
 
 <style scoped>
-/* ========== LAYOUT ========== */
 .ww-dashboard-layout {
   display: grid !important;
   grid-template-columns: auto 1fr;
@@ -445,7 +441,6 @@ export default {
   background-color: var(--layout-bg, #F4F4F6) !important;
 }
 
-/* ========== SIDEBAR ========== */
 .ww-sidebar {
   grid-column: 1;
   min-height: 100vh;
@@ -468,7 +463,6 @@ export default {
   border-radius: 4px;
 }
 
-/* Header */
 .ww-sidebar-header {
   display: flex;
   align-items: center;
@@ -501,7 +495,6 @@ export default {
   white-space: nowrap;
 }
 
-/* Navigation */
 .ww-sidebar-nav {
   flex: 1;
   padding: 8px 12px;
@@ -565,7 +558,6 @@ export default {
   border-radius: 10px;
 }
 
-/* Submenu */
 .ww-nav-submenu {
   padding-left: 44px;
 }
@@ -584,13 +576,11 @@ export default {
   color: #0f172a;
 }
 
-/* Footer */
 .ww-sidebar-footer {
   margin-top: auto;
   padding: 12px;
 }
 
-/* Promo Card */
 .ww-promo-card {
   padding: 14px;
   border-radius: 10px;
@@ -629,7 +619,6 @@ export default {
   opacity: 0.9;
 }
 
-/* User Section */
 .ww-user-section {
   position: relative;
   display: flex;
@@ -675,7 +664,6 @@ export default {
   cursor: pointer;
 }
 
-/* User Dropdown Menu */
 .ww-user-dropdown {
   position: absolute;
   bottom: 100%;
@@ -742,7 +730,6 @@ export default {
   color: #0f172a;
 }
 
-/* Collapsed State */
 .ww-sidebar.ww-collapsed .ww-logo-text,
 .ww-sidebar.ww-collapsed .ww-section-label,
 .ww-sidebar.ww-collapsed .ww-nav-label,
@@ -768,7 +755,6 @@ export default {
   justify-content: center;
 }
 
-/* ========== MAIN AREA ========== */
 .ww-main-area {
   grid-column: 2;
   display: flex !important;
@@ -778,7 +764,6 @@ export default {
   box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
 
-/* Top Bar */
 .ww-topbar {
   display: flex;
   align-items: center;
@@ -883,7 +868,6 @@ export default {
   min-width: 220px;
 }
 
-/* ========== CONTENT AREA ========== */
 .ww-content-area {
   flex: 1;
   overflow-y: auto;
