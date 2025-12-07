@@ -1,6 +1,10 @@
 export default {
-  inherit: { type: 'ww-layout' },
-
+  options: {
+    displayAllowedValues: ['flex', 'block', 'inline-block', 'inline-flex'],
+  },
+  inherit: {
+    type: 'ww-layout',
+  },
   editor: {
     label: {
       en: "Dashboard Layout",

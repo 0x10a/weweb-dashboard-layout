@@ -1,15 +1,19 @@
 {
-    "name": "weweb-dashboard-layout",
-    "version": "0.0.12",
-    "private": true,
+    "name": "ww-dashboard-layout",
+    "version": "0.0.13",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/0x10a/weweb-dashboard-layout"
+    },
     "scripts": {
-        "serve": "weweb serve",
-        "build": "weweb build name=weweb-dashboard-layout type=element"
+        "build": "weweb build -- name=ww-dashboard-layout type=wwobject",
+        "serve": "weweb serve"
     },
     "dependencies": {
         "lucide-vue-next": "^0.454.0"
     },
     "devDependencies": {
         "@weweb/cli": "latest"
-    }
+    },
+    "license": "MIT"
 }
