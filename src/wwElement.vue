@@ -1,25 +1,13 @@
 <template>
-    <div class="ww-dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="ww-sidebar" :style="sidebarStyle">
-            <div class="ww-sidebar-header">
-                <span class="ww-logo">{{ content.logoText || 'Dashboard' }}</span>
-            </div>
-            <nav class="ww-sidebar-nav">
-                <div 
-                    v-for="(item, index) in menuItems" 
-                    :key="index"
-                    class="ww-nav-item"
-                    @click="handleMenuClick(item, index)"
-                >
-                    {{ item.label || 'Menu Item' }}
-                </div>
+    <div class="dashboard-layout">
+        <aside class="sidebar" :style="sidebarStyles">
+            <div class="logo">{{ content.logoText }}</div>
+            <nav class="nav">
+                <slot name="sidebar"></slot>
             </nav>
         </aside>
-        
-        <!-- Main Content -->
-        <main class="ww-main">
-            <wwLayout path="children"></wwLayout>
+        <main class="main-content">
+            <wwLayout path="dashboardContent"></wwLayout>
         </main>
     </div>
 </template>
@@ -30,73 +18,47 @@ export default {
         content: { type: Object, required: true },
         wwElementState: { type: Object, required: true },
     },
-    emits: ['trigger-event'],
+    emits: ["update:content"],
     computed: {
-        menuItems() {
-            return this.content.menuItems || [];
-        },
-        sidebarStyle() {
+        sidebarStyles() {
             return {
-                backgroundColor: this.content.sidebarBgColor || '#1e293b',
-                width: this.content.sidebarWidth || '240px',
+                width: this.content.sidebarWidth || "250px",
+                backgroundColor: this.content.sidebarBgColor || "#1e293b",
             };
-        },
-    },
-    methods: {
-        handleMenuClick(item, index) {
-            this.$emit('trigger-event', {
-                name: 'menu-item-click',
-                event: { item, index },
-            });
         },
     },
 };
 </script>
 
 <style scoped>
-.ww-dashboard-layout {
+.dashboard-layout {
     display: flex;
-    min-height: 100vh;
     width: 100%;
+    min-height: 100vh;
 }
 
-.ww-sidebar {
+.sidebar {
     display: flex;
     flex-direction: column;
-    color: white;
     flex-shrink: 0;
+    color: white;
 }
 
-.ww-sidebar-header {
+.logo {
     padding: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.ww-logo {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.ww-sidebar-nav {
-    padding: 12px;
+.nav {
     flex: 1;
+    padding: 16px;
 }
 
-.ww-nav-item {
-    padding: 10px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 4px;
-    transition: background 0.2s;
-}
-
-.ww-nav-item:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-.ww-main {
+.main-content {
     flex: 1;
-    background: #f8fafc;
-    padding: 24px;
+    min-width: 0;
+    background-color: #f1f5f9;
 }
 </style>

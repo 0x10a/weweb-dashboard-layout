@@ -1,72 +1,49 @@
 export default {
+    inherit: { type: "ww-layout" },
     options: {
-        lazyHydrate: true,
+        sizable: true,
     },
     editor: {
         label: {
-            en: 'Dashboard Layout',
-            fr: 'Layout Dashboard',
+            en: "Dashboard Layout",
+            fr: "Layout Dashboard",
         },
-        icon: 'border',
+        icon: "view-grid",
     },
-    triggerEvents: [
-        {
-            name: 'menu-item-click',
-            label: { en: 'On menu item click' },
-            event: { item: {}, index: 0 },
-        },
-    ],
     properties: {
-        children: {
+        dashboardContent: {
             hidden: true,
             defaultValue: [],
         },
-        logoText: {
-            label: { en: 'Logo text' },
-            type: 'Text',
-            section: 'settings',
-            bindable: true,
-            defaultValue: 'Dashboard',
+        sidebarWidth: {
+            label: {
+                en: "Sidebar width",
+                fr: "Largeur sidebar",
+            },
+            type: "Length",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 100, max: 400 },
+                ],
+            },
+            defaultValue: "250px",
+            responsive: true,
         },
         sidebarBgColor: {
-            label: { en: 'Sidebar color' },
-            type: 'Color',
-            section: 'settings',
-            defaultValue: '#1e293b',
-        },
-        sidebarWidth: {
-            label: { en: 'Sidebar width' },
-            type: 'Length',
-            section: 'settings',
-            defaultValue: '240px',
-        },
-        menuItems: {
-            label: { en: 'Menu items' },
-            type: 'Array',
-            section: 'settings',
-            bindable: true,
-            defaultValue: [
-                { label: 'Home', id: 'home' },
-                { label: 'Settings', id: 'settings' },
-            ],
-            options: {
-                item: {
-                    type: 'Object',
-                    defaultValue: { label: 'New item', id: '' },
-                    options: {
-                        item: {
-                            label: {
-                                label: { en: 'Label' },
-                                type: 'Text',
-                            },
-                            id: {
-                                label: { en: 'ID' },
-                                type: 'Text',
-                            },
-                        },
-                    },
-                },
+            label: {
+                en: "Sidebar background",
+                fr: "Fond sidebar",
             },
+            type: "Color",
+            defaultValue: "#1e293b",
+        },
+        logoText: {
+            label: {
+                en: "Logo text",
+                fr: "Texte logo",
+            },
+            type: "Text",
+            defaultValue: "Dashboard",
         },
     },
 };
