@@ -7,7 +7,10 @@
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
           <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
-            <wwEditorIcon :name="getIconName(content.logoIcon)" large />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
           </div>
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
@@ -29,15 +32,13 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <wwEditorIcon :name="getIconName(item.icon)" small />
+              <span class="ww-nav-icon">{{ item.emoji || '•' }}</span>
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <wwEditorIcon 
+              <span 
                 v-if="!isCollapsedState && item.children && item.children.length" 
-                name="chevron-right"
-                small
                 class="ww-nav-arrow"
                 :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
-              />
+              >›</span>
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                 {{ item.badge }}
               </span>
@@ -80,7 +81,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <wwEditorIcon v-if="!isCollapsedState" name="more-vertical" small class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
+          <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }">⋮</span>
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -98,12 +99,10 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <wwEditorIcon :name="getIconName(menuItem.icon)" small />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <wwEditorIcon name="log-out" small />
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -117,11 +116,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            <wwEditorIcon name="panel-left" small />
+            ☰
           </button>
           
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <wwEditorIcon name="search" small class="ww-search-icon" />
+            <span class="ww-search-icon">🔍</span>
             <input 
               type="text" 
               :placeholder="content.searchPlaceholder" 
@@ -134,14 +133,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            <wwEditorIcon name="bell" small />
+            🔔
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            <wwEditorIcon name="sun" small />
+            ☀️
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            <wwEditorIcon name="settings" small />
+            ⚙️
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -162,12 +161,10 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <wwEditorIcon :name="getIconName(menuItem.icon)" small />
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
               <div class="ww-dropdown-item" @click.stop="handleLogout">
-                <wwEditorIcon name="log-out" small />
                 <span>{{ content.logoutLabel }}</span>
               </div>
             </div>
@@ -217,15 +214,6 @@ export default {
     watch(() => props.content.activeItemId, (newVal) => {
       activeItemId.value = newVal;
     });
-
-    // Helper to extract icon name from "lucide/icon-name" format
-    const getIconName = (name) => {
-      if (!name) return 'circle';
-      if (name.includes('/')) {
-        return name.split('/').pop();
-      }
-      return name;
-    };
 
     // Computed styles
     const layoutStyles = computed(() => ({
@@ -414,7 +402,6 @@ export default {
       promoCardStyle,
       promoBtnStyle,
       menuSections,
-      getIconName,
       getNavItemStyle,
       getSubItemStyle,
       toggleCollapse,
