@@ -59,8 +59,6 @@ export default {
     }
   ],
 
-  inherit: [{ type: 'ww-layout' }],
-
   properties: {
     // ========== CONTENT SLOT ==========
     children: {

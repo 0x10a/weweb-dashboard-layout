@@ -1,44 +1,19 @@
 {
   "name": "weweb-dashboard-layout",
-  "version": "0.0.2",
-  "description": "Professional dashboard layout component for WeWeb with sidebar navigation, topbar, and customizable themes - Shadcn UI style",
-  "main": "ww-config.js",
-  "weweb": {
-    "type": "element"
+  "version": "0.0.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0x10a/weweb-dashboard-layout"
   },
-  "scripts": {
-    "serve": "npx @weweb/cli serve",
-    "build": "npx @weweb/cli build -- name=weweb-dashboard-layout type=element",
-    "dev": "npx @weweb/cli serve",
-    "preview": "vite",
-    "preview:build": "vite build"
-  },
-  "keywords": [
-    "weweb",
-    "component",
-    "sidebar",
-    "admin",
-    "navigation",
-    "dashboard",
-    "vue3",
-    "menu",
-    "shadcn",
-    "layout"
-  ],
   "license": "MIT",
-  "engines": {
-    "node": ">=16.0.0"
+  "scripts": {
+    "build": "weweb build name=weweb-dashboard-layout type=element",
+    "serve": "weweb serve"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
-    "@weweb/cli": "latest",
-    "vite": "^5.0.0",
-    "vue": "^3.4.0"
+    "@weweb/cli": "latest"
   },
   "dependencies": {
     "lucide-vue-next": "^0.294.0"
-  },
-  "peerDependencies": {
-    "vue": "^3.0.0"
   }
 }
