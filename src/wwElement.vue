@@ -6,9 +6,7 @@
             <div class="ww-sidebar-header">
                 <div class="ww-logo-area">
                     <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
-                        <component :is="getIcon(content.logoIcon)" :size="24" />
-                    </div>
+                    <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }" v-html="logoIconHtml"></div>
                     <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
                         {{ content.logoText }}
                     </span>
@@ -29,15 +27,14 @@
                             :style="getNavItemStyle(item)"
                             @click="handleItemClick(item, index)"
                         >
-                            <component :is="getIcon(item.icon)" :size="18" class="ww-nav-icon" />
+                            <span class="ww-nav-icon" v-html="getIconHtml(item.icon)"></span>
                             <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-                            <component
+                            <span
                                 v-if="!isCollapsedState && item.children && item.children.length"
-                                :is="ChevronRight"
-                                :size="14"
                                 class="ww-nav-arrow"
                                 :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
-                            />
+                                v-html="chevronRightHtml"
+                            ></span>
                             <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                                 {{ item.badge }}
                             </span>
@@ -80,7 +77,7 @@
                         <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
                         <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
                     </div>
-                    <component v-if="!isCollapsedState" :is="MoreVertical" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
+                    <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" v-html="moreVerticalHtml"></span>
                     
                     <!-- User Dropdown Menu -->
                     <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -98,12 +95,12 @@
                             class="ww-dropdown-item"
                             @click.stop="handleUserMenuClick(menuItem)"
                         >
-                            <component :is="getIcon(menuItem.icon)" :size="16" />
+                            <span v-html="getIconHtml(menuItem.icon)"></span>
                             <span>{{ menuItem.label }}</span>
                         </div>
                         <div class="ww-dropdown-divider"></div>
                         <div class="ww-dropdown-item" @click.stop="handleLogout">
-                            <component :is="LogOut" :size="16" />
+                            <span v-html="logOutHtml"></span>
                             <span>{{ content.logoutLabel }}</span>
                         </div>
                     </div>
@@ -117,11 +114,11 @@
             <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
                 <div class="ww-topbar-left">
                     <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-                        <component :is="PanelLeft" :size="18" />
+                        <span v-html="panelLeftHtml"></span>
                     </button>
 
                     <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-                        <component :is="Search" :size="16" class="ww-search-icon" />
+                        <span class="ww-search-icon" v-html="searchHtml"></span>
                         <input
                             type="text"
                             :placeholder="content.searchPlaceholder"
@@ -134,14 +131,14 @@
 
                 <div class="ww-topbar-right">
                     <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-                        <component :is="Bell" :size="18" />
+                        <span v-html="bellHtml"></span>
                         <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
                     </button>
                     <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-                        <component :is="Sun" :size="18" />
+                        <span v-html="sunHtml"></span>
                     </button>
                     <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-                        <component :is="Settings" :size="18" />
+                        <span v-html="settingsHtml"></span>
                     </button>
                     <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
                         <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -162,12 +159,12 @@
                                 class="ww-dropdown-item"
                                 @click.stop="handleUserMenuClick(menuItem)"
                             >
-                                <component :is="getIcon(menuItem.icon)" :size="16" />
+                                <span v-html="getIconHtml(menuItem.icon)"></span>
                                 <span>{{ menuItem.label }}</span>
                             </div>
                             <div class="ww-dropdown-divider"></div>
                             <div class="ww-dropdown-item" @click.stop="handleLogout">
-                                <component :is="LogOut" :size="16" />
+                                <span v-html="logOutHtml"></span>
                                 <span>{{ content.logoutLabel }}</span>
                             </div>
                         </div>
@@ -184,90 +181,20 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue';
-import {
-    Layers, LayoutDashboard, ShoppingBag, TrendingUp, Users, BarChart2, Trello, Circle,
-    ChevronRight, MoreVertical, LogOut, PanelLeft, Search, Bell, Sun, Settings,
-    User, CreditCard, HelpCircle, Home, FileText, Calendar, Mail, MessageSquare,
-    Folder, Image, Video, Music, Database, Server, Cloud, Lock, Key, Shield,
-    Zap, Activity, PieChart, LineChart, Target, Award, Gift, Heart, Star,
-    Bookmark, Flag, Tag, Hash, AtSign, Link, Paperclip, Download, Upload,
-    Share, Send, Phone, MapPin, Navigation, Compass, Globe, Map
-} from 'lucide-vue-next';
-
-const iconMap = {
-    'layers': Layers,
-    'layout-dashboard': LayoutDashboard,
-    'shopping-bag': ShoppingBag,
-    'trending-up': TrendingUp,
-    'users': Users,
-    'bar-chart-2': BarChart2,
-    'trello': Trello,
-    'circle': Circle,
-    'chevron-right': ChevronRight,
-    'more-vertical': MoreVertical,
-    'log-out': LogOut,
-    'panel-left': PanelLeft,
-    'search': Search,
-    'bell': Bell,
-    'sun': Sun,
-    'settings': Settings,
-    'user': User,
-    'credit-card': CreditCard,
-    'help-circle': HelpCircle,
-    'home': Home,
-    'file-text': FileText,
-    'calendar': Calendar,
-    'mail': Mail,
-    'message-square': MessageSquare,
-    'folder': Folder,
-    'image': Image,
-    'video': Video,
-    'music': Music,
-    'database': Database,
-    'server': Server,
-    'cloud': Cloud,
-    'lock': Lock,
-    'key': Key,
-    'shield': Shield,
-    'zap': Zap,
-    'activity': Activity,
-    'pie-chart': PieChart,
-    'line-chart': LineChart,
-    'target': Target,
-    'award': Award,
-    'gift': Gift,
-    'heart': Heart,
-    'star': Star,
-    'bookmark': Bookmark,
-    'flag': Flag,
-    'tag': Tag,
-    'hash': Hash,
-    'at-sign': AtSign,
-    'link': Link,
-    'paperclip': Paperclip,
-    'download': Download,
-    'upload': Upload,
-    'share': Share,
-    'send': Send,
-    'phone': Phone,
-    'map-pin': MapPin,
-    'navigation': Navigation,
-    'compass': Compass,
-    'globe': Globe,
-    'map': Map,
-};
+import { ref, computed, watch, watchEffect } from 'vue';
 
 export default {
     props: {
         content: { type: Object, required: true },
-        uid: { type: String, required: true },
+        wwElementState: { type: Object, required: true },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
     emits: ['trigger-event', 'update:content'],
     setup(props, { emit }) {
+        const { getIcon } = wwLib.useIcons();
+
         const isCollapsedState = ref(false);
         const activeItemId = ref('');
         const expandedItems = ref([]);
@@ -275,13 +202,52 @@ export default {
         const showTopbarMenu = ref(false);
         const searchQuery = ref('');
 
-        const getIcon = (name) => {
-            if (!name) return Circle;
-            let iconName = name;
-            if (name.includes('/')) {
-                iconName = name.split('/').pop();
+        // Icon HTML refs
+        const logoIconHtml = ref(null);
+        const chevronRightHtml = ref(null);
+        const moreVerticalHtml = ref(null);
+        const logOutHtml = ref(null);
+        const panelLeftHtml = ref(null);
+        const searchHtml = ref(null);
+        const bellHtml = ref(null);
+        const sunHtml = ref(null);
+        const settingsHtml = ref(null);
+
+        // Placeholder SVG
+        const placeholderSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
+
+        // Load fixed icons
+        const loadFixedIcons = async () => {
+            try {
+                logoIconHtml.value = await getIcon(props.content.logoIcon || 'lucide/layers') || placeholderSvg;
+                chevronRightHtml.value = await getIcon('lucide/chevron-right') || placeholderSvg;
+                moreVerticalHtml.value = await getIcon('lucide/more-vertical') || placeholderSvg;
+                logOutHtml.value = await getIcon('lucide/log-out') || placeholderSvg;
+                panelLeftHtml.value = await getIcon('lucide/panel-left') || placeholderSvg;
+                searchHtml.value = await getIcon('lucide/search') || placeholderSvg;
+                bellHtml.value = await getIcon('lucide/bell') || placeholderSvg;
+                sunHtml.value = await getIcon('lucide/sun') || placeholderSvg;
+                settingsHtml.value = await getIcon('lucide/settings') || placeholderSvg;
+            } catch (error) {
+                console.error('Error loading icons:', error);
             }
-            return iconMap[iconName] || Circle;
+        };
+
+        watchEffect(() => {
+            loadFixedIcons();
+        });
+
+        // Dynamic icon loader for menu items
+        const getIconHtml = (iconName) => {
+            if (!iconName) return placeholderSvg;
+            // Will be loaded asynchronously, return placeholder initially
+            let result = placeholderSvg;
+            getIcon(iconName.includes('/') ? iconName : `lucide/${iconName}`).then(html => {
+                result = html || placeholderSvg;
+            }).catch(() => {
+                result = placeholderSvg;
+            });
+            return result;
         };
 
         const layoutStyles = computed(() => ({
@@ -349,17 +315,16 @@ export default {
         const getNavItemStyle = (item) => {
             const isActive = activeItemId.value === item.id;
             return {
-                backgroundColor: isActive ? (props.content.activeItemBg || 'rgba(0,0,0,0.06)') : 'transparent',
-                color: isActive ? (props.content.activeItemColor || '#0f172a') : (props.content.textColor || '#0f172a')
+                backgroundColor: isActive ? (props.content.activeItemBg || '#fff') : 'transparent',
+                color: isActive ? (props.content.activeItemColor || '#0f172a') : (props.content.itemColor || '#64748b'),
+                borderRadius: props.content.itemBorderRadius || '6px'
             };
         };
 
         const getSubItemStyle = (child) => {
             const isActive = activeItemId.value === child.id;
             return {
-                color: isActive ? (props.content.activeItemColor || '#0f172a') : (props.content.mutedTextColor || '#64748b'),
-                backgroundColor: isActive ? (props.content.activeItemBg || 'rgba(0,0,0,0.06)') : 'transparent',
-                borderLeftColor: isActive ? (props.content.activeItemColor || '#0f172a') : 'transparent'
+                color: isActive ? (props.content.activeItemColor || '#0f172a') : (props.content.itemColor || '#64748b')
             };
         };
 
@@ -371,28 +336,30 @@ export default {
         const handleItemClick = (item, index) => {
             if (item.children && item.children.length) {
                 const idx = expandedItems.value.indexOf(item.id);
-                if (idx > -1) expandedItems.value.splice(idx, 1);
-                else expandedItems.value.push(item.id);
+                if (idx > -1) {
+                    expandedItems.value.splice(idx, 1);
+                } else {
+                    expandedItems.value.push(item.id);
+                }
             } else {
                 activeItemId.value = item.id;
-                emit('trigger-event', { name: 'menu-item-click', event: { item, index, route: item.route || '' } });
+                emit('trigger-event', { name: 'menu-item-click', event: { item, index, route: item.route } });
             }
         };
 
-        const handleSubItemClick = (child, index) => {
+        const handleSubItemClick = (child, childIndex) => {
             activeItemId.value = child.id;
-            emit('trigger-event', { name: 'menu-item-click', event: { item: child, index, route: child.route || '' } });
+            emit('trigger-event', { name: 'menu-item-click', event: { item: child, index: childIndex, route: child.route } });
         };
 
         const toggleUserMenu = () => {
             showUserMenu.value = !showUserMenu.value;
-            showTopbarMenu.value = false;
         };
 
         const handleUserMenuClick = (menuItem) => {
             showUserMenu.value = false;
             showTopbarMenu.value = false;
-            emit('trigger-event', { name: 'user-menu-click', event: { item: menuItem, action: menuItem.action || '' } });
+            emit('trigger-event', { name: 'user-menu-click', event: { item: menuItem, action: menuItem.action } });
         };
 
         const handleLogout = () => {
@@ -422,101 +389,474 @@ export default {
         };
 
         return {
-            // State
-            isCollapsedState, activeItemId, expandedItems, showUserMenu, showTopbarMenu, searchQuery,
-            // Icons
-            ChevronRight, MoreVertical, LogOut, PanelLeft, Search, Bell, Sun, Settings,
-            // Methods
-            getIcon, layoutStyles, sidebarStyles, mainAreaStyle, contentAreaStyle,
-            topbarStyle, searchContainerStyle, badgeStyle, promoCardStyle, promoBtnStyle, menuSections,
-            getNavItemStyle, getSubItemStyle, toggleCollapse, handleItemClick, handleSubItemClick,
-            toggleUserMenu, handleUserMenuClick, handleLogout, handlePromoClick, handleSearch,
-            handleNotificationClick, handleThemeToggle, handleSettingsClick,
+            isCollapsedState,
+            activeItemId,
+            expandedItems,
+            showUserMenu,
+            showTopbarMenu,
+            searchQuery,
+            layoutStyles,
+            sidebarStyles,
+            mainAreaStyle,
+            contentAreaStyle,
+            topbarStyle,
+            searchContainerStyle,
+            badgeStyle,
+            promoCardStyle,
+            promoBtnStyle,
+            menuSections,
+            getNavItemStyle,
+            getSubItemStyle,
+            toggleCollapse,
+            handleItemClick,
+            handleSubItemClick,
+            toggleUserMenu,
+            handleUserMenuClick,
+            handleLogout,
+            handlePromoClick,
+            handleSearch,
+            handleNotificationClick,
+            handleThemeToggle,
+            handleSettingsClick,
+            getIconHtml,
+            logoIconHtml,
+            chevronRightHtml,
+            moreVerticalHtml,
+            logOutHtml,
+            panelLeftHtml,
+            searchHtml,
+            bellHtml,
+            sunHtml,
+            settingsHtml,
         };
     },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .ww-dashboard-layout {
-    display: grid !important;
-    grid-template-columns: auto 1fr;
-    width: 100% !important;
+    display: flex;
     min-height: 100vh;
-    background-color: var(--layout-bg, #F4F4F6) !important;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
+
 .ww-sidebar {
-    grid-column: 1;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     transition: width 0.2s ease;
     overflow: hidden;
-    &:hover { overflow-y: auto; }
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+    flex-shrink: 0;
 }
+
+.ww-collapsed {
+    align-items: center;
+}
+
 .ww-sidebar-header {
+    padding: 16px;
+}
+
+.ww-logo-area {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 25px 16px 8px 16px;
-    min-height: 49px;
+    gap: 10px;
 }
-.ww-logo-area { display: flex; align-items: center; gap: 10px; }
-.ww-logo-img { width: 28px; height: 28px; object-fit: contain; }
-.ww-logo-icon { display: flex; align-items: center; justify-content: center; }
-.ww-logo-text { font-size: 15px; font-weight: 600; white-space: nowrap; }
-.ww-sidebar-nav { flex: 1; padding: 8px 12px; }
-.ww-nav-section { margin-bottom: 8px; }
-.ww-section-label { display: block; padding: 8px 16px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-.ww-nav-item-wrapper { position: relative; }
+
+.ww-logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.ww-logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ww-logo-icon :deep(svg) {
+    width: 24px;
+    height: 24px;
+}
+
+.ww-logo-text {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.ww-sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 8px;
+}
+
+.ww-nav-section {
+    margin-bottom: 16px;
+}
+
+.ww-section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    display: block;
+    letter-spacing: 0.5px;
+}
+
+.ww-nav-item-wrapper {
+    margin-bottom: 2px;
+}
+
 .ww-nav-item {
-    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
-    cursor: pointer; transition: all 0.15s ease; font-size: 13px; border-radius: 6px;
-    &:hover { background: rgba(0,0,0,0.04); }
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 13px;
 }
-.ww-nav-icon { flex-shrink: 0; display: flex; align-items: center; }
-.ww-nav-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ww-nav-arrow { transition: transform 0.2s ease; display: flex; align-items: center; &.ww-rotated { transform: rotate(90deg); } }
-.ww-nav-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
-.ww-nav-submenu { padding-left: 44px; }
-.ww-nav-subitem { position: relative; padding: 8px 16px 8px 12px; font-size: 13px; cursor: pointer; border-left: 2px solid transparent; margin-left: -2px; transition: all 0.15s ease; &:hover { color: #0f172a; } }
-.ww-sidebar-footer { margin-top: auto; padding: 12px; }
-.ww-promo-card { padding: 14px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-.ww-promo-content { margin-bottom: 12px; strong { display: block; font-size: 13px; margin-bottom: 4px; } p { font-size: 11px; margin: 0; line-height: 1.4; } }
-.ww-promo-btn { width: 100%; padding: 8px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; &:hover { opacity: 0.9; } }
-.ww-user-section { position: relative; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; &:hover { background: rgba(0,0,0,0.04); } }
-.ww-user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-.ww-user-info { flex: 1; min-width: 0; }
-.ww-user-name { display: block; font-size: 13px; font-weight: 500; }
-.ww-user-email { display: block; font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
-.ww-user-menu-btn { cursor: pointer; display: flex; align-items: center; }
-.ww-user-dropdown, .ww-topbar-dropdown { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 8px 0; z-index: 1000; min-width: 220px; }
-.ww-user-dropdown { bottom: 100%; left: 0; right: 0; margin-bottom: 8px; }
-.ww-topbar-dropdown { top: 100%; right: 0; margin-top: 8px; }
-.ww-dropdown-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
-.ww-dropdown-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-.ww-dropdown-user-info { flex: 1; }
-.ww-dropdown-name { display: block; color: #0f172a; font-size: 13px; font-weight: 500; }
-.ww-dropdown-email { display: block; color: #64748b; font-size: 11px; }
-.ww-dropdown-divider { height: 1px; background: #e2e8f0; margin: 4px 0; }
-.ww-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; color: #64748b; font-size: 13px; cursor: pointer; transition: background 0.15s; &:hover { background: #f8fafc; color: #0f172a; } }
-.ww-sidebar.ww-collapsed {
-    .ww-logo-text, .ww-section-label, .ww-nav-label, .ww-nav-arrow, .ww-nav-badge, .ww-nav-submenu, .ww-promo-card, .ww-user-info, .ww-user-menu-btn { display: none; }
-    .ww-nav-item { justify-content: center; padding: 12px; }
-    .ww-user-section { justify-content: center; }
-    .ww-sidebar-header { justify-content: center; }
+
+.ww-nav-item:hover {
+    opacity: 0.8;
 }
-.ww-main-area { grid-column: 2; display: flex !important; flex-direction: column !important; min-height: 100vh; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-.ww-topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 24px; background: #fff; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
-.ww-topbar-left { display: flex; align-items: center; gap: 16px; }
-.ww-topbar-btn { position: relative; background: none; border: none; color: #64748b; padding: 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; &:hover { background: #f1f5f9; color: #0f172a; } &.ww-notification .ww-notification-badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid #fff; } }
-.ww-search-container { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; min-width: 280px; }
-.ww-search-icon { color: #94a3b8; flex-shrink: 0; display: flex; align-items: center; }
-.ww-search-input { flex: 1; border: none; background: none; outline: none; font-size: 13px; color: #0f172a; &::placeholder { color: #94a3b8; } }
-.ww-topbar-right { display: flex; align-items: center; gap: 4px; }
-.ww-topbar-profile { position: relative; cursor: pointer; margin-left: 8px; }
-.ww-topbar-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-.ww-content-area { flex: 1; overflow-y: auto; padding: 24px; }
+
+.ww-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ww-nav-icon :deep(svg) {
+    width: 18px;
+    height: 18px;
+}
+
+.ww-nav-label {
+    flex: 1;
+    white-space: nowrap;
+}
+
+.ww-nav-arrow {
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.ww-nav-arrow :deep(svg) {
+    width: 14px;
+    height: 14px;
+}
+
+.ww-nav-arrow.ww-rotated {
+    transform: rotate(90deg);
+}
+
+.ww-nav-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.ww-nav-submenu {
+    margin-left: 28px;
+    padding-left: 12px;
+    border-left: 1px solid #e2e8f0;
+}
+
+.ww-nav-subitem {
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ww-nav-subitem:hover {
+    opacity: 0.8;
+}
+
+.ww-sidebar-footer {
+    padding: 16px;
+    margin-top: auto;
+}
+
+.ww-promo-card {
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ww-promo-content strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.ww-promo-content p {
+    font-size: 12px;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+.ww-promo-btn {
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.ww-promo-btn:hover {
+    opacity: 0.9;
+}
+
+.ww-user-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.15s ease;
+}
+
+.ww-user-section:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.ww-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.ww-user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ww-user-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ww-user-email {
+    display: block;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ww-user-menu-btn {
+    display: flex;
+    align-items: center;
+}
+
+.ww-user-menu-btn :deep(svg) {
+    width: 16px;
+    height: 16px;
+}
+
+.ww-user-dropdown,
+.ww-topbar-dropdown {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.ww-topbar-dropdown {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: auto;
+    right: 0;
+}
+
+.ww-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+}
+
+.ww-dropdown-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.ww-dropdown-user-info {
+    flex: 1;
+}
+
+.ww-dropdown-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.ww-dropdown-email {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.ww-dropdown-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 4px 0;
+}
+
+.ww-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.ww-dropdown-item:hover {
+    background-color: #f1f5f9;
+}
+
+.ww-dropdown-item :deep(svg) {
+    width: 16px;
+    height: 16px;
+}
+
+.ww-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ww-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ww-topbar-left,
+.ww-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ww-topbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+.ww-topbar-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.ww-topbar-btn :deep(svg) {
+    width: 18px;
+    height: 18px;
+}
+
+.ww-notification {
+    position: relative;
+}
+
+.ww-notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
+.ww-search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    min-width: 200px;
+}
+
+.ww-search-icon {
+    display: flex;
+    align-items: center;
+    color: #94a3b8;
+}
+
+.ww-search-icon :deep(svg) {
+    width: 16px;
+    height: 16px;
+}
+
+.ww-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    outline: none;
+    color: #0f172a;
+}
+
+.ww-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.ww-topbar-profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.ww-topbar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.ww-content-area {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+}
 </style>
