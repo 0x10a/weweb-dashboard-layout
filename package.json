@@ -1,11 +1,14 @@
 {
   "name": "weweb-dashboard-layout",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Professional dashboard layout component for WeWeb with sidebar navigation, topbar, and customizable themes - Shadcn UI style",
   "main": "ww-config.js",
+  "weweb": {
+    "type": "element"
+  },
   "scripts": {
     "serve": "npx @weweb/cli serve",
-    "build": "npx @weweb/cli build -- name=weweb-dashboard-layout type=wwsection",
+    "build": "npx @weweb/cli build -- name=weweb-dashboard-layout type=element",
     "dev": "npx @weweb/cli serve",
     "preview": "vite",
     "preview:build": "vite build"
