@@ -7,7 +7,7 @@
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
           <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
-            <component :is="getIcon(content.logoIcon)" :size="24" />
+            <wwEditorIcon :name="getIconName(content.logoIcon)" large />
           </div>
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
@@ -29,12 +29,12 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <component :is="getIcon(item.icon)" :size="18" class="ww-nav-icon" />
+              <wwEditorIcon :name="getIconName(item.icon)" small />
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <component 
+              <wwEditorIcon 
                 v-if="!isCollapsedState && item.children && item.children.length" 
-                :is="getIcon('chevron-right')"
-                :size="14" 
+                name="chevron-right"
+                small
                 class="ww-nav-arrow"
                 :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
               />
@@ -80,7 +80,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <component v-if="!isCollapsedState" :is="getIcon('more-vertical')" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
+          <wwEditorIcon v-if="!isCollapsedState" name="more-vertical" small class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -98,12 +98,12 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <component :is="getIcon(menuItem.icon)" :size="16" />
+              <wwEditorIcon :name="getIconName(menuItem.icon)" small />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <component :is="getIcon('log-out')" :size="16" />
+              <wwEditorIcon name="log-out" small />
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -117,11 +117,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            <component :is="getIcon('panel-left')" :size="18" />
+            <wwEditorIcon name="panel-left" small />
           </button>
           
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <component :is="getIcon('search')" :size="16" class="ww-search-icon" />
+            <wwEditorIcon name="search" small class="ww-search-icon" />
             <input 
               type="text" 
               :placeholder="content.searchPlaceholder" 
@@ -134,14 +134,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            <component :is="getIcon('bell')" :size="18" />
+            <wwEditorIcon name="bell" small />
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            <component :is="getIcon('sun')" :size="18" />
+            <wwEditorIcon name="sun" small />
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            <component :is="getIcon('settings')" :size="18" />
+            <wwEditorIcon name="settings" small />
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -162,12 +162,12 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <component :is="getIcon(menuItem.icon)" :size="16" />
+                <wwEditorIcon :name="getIconName(menuItem.icon)" small />
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
               <div class="ww-dropdown-item" @click.stop="handleLogout">
-                <component :is="getIcon('log-out')" :size="16" />
+                <wwEditorIcon name="log-out" small />
                 <span>{{ content.logoutLabel }}</span>
               </div>
             </div>
@@ -185,14 +185,9 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
-import * as LucideIcons from 'lucide-vue-next';
 
 export default {
   name: 'DashboardLayout',
-  
-  components: {
-    ...LucideIcons
-  },
 
   props: {
     content: {
@@ -222,6 +217,15 @@ export default {
     watch(() => props.content.activeItemId, (newVal) => {
       activeItemId.value = newVal;
     });
+
+    // Helper to extract icon name from "lucide/icon-name" format
+    const getIconName = (name) => {
+      if (!name) return 'circle';
+      if (name.includes('/')) {
+        return name.split('/').pop();
+      }
+      return name;
+    };
 
     // Computed styles
     const layoutStyles = computed(() => ({
@@ -264,40 +268,6 @@ export default {
       backgroundColor: props.content.promoBtnBg || '#0f172a',
       color: props.content.promoBtnColor || '#fff'
     }));
-
-    // Icon helper - handles both "icon-name" and "lucide/icon-name" formats
-    const getIcon = (name) => {
-      if (!name) return LucideIcons.Circle;
-      
-      // Remove "lucide/" or any other prefix like "phosphor/" etc.
-      let iconName = name;
-      if (name.includes('/')) {
-        iconName = name.split('/').pop();
-      }
-      
-      // Convert kebab-case to PascalCase
-      const pascalCase = iconName.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join('');
-      
-      const icon = LucideIcons[pascalCase];
-      if (icon) return icon;
-      
-      // Try with different variations
-      // Some icons might have numbers, try to handle them
-      const variations = [
-        pascalCase,
-        pascalCase.replace(/(\d+)/g, '$1'), // Keep numbers as-is
-        iconName.replace(/-/g, ''), // Remove dashes completely
-      ];
-      
-      for (const variation of variations) {
-        if (LucideIcons[variation]) return LucideIcons[variation];
-      }
-      
-      console.warn('Icon not found:', name, '-> tried:', pascalCase);
-      return LucideIcons.Circle;
-    };
 
     // Transform flat menuItems to grouped menuSections
     const menuSections = computed(() => {
@@ -444,7 +414,7 @@ export default {
       promoCardStyle,
       promoBtnStyle,
       menuSections,
-      getIcon,
+      getIconName,
       getNavItemStyle,
       getSubItemStyle,
       toggleCollapse,
@@ -521,35 +491,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Icon SVG styles */
-.ww-icon-svg {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-}
-
-.ww-icon-svg :deep(svg) {
-  width: 100%;
-  height: 100%;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.ww-logo-icon .ww-icon-svg {
-  width: 24px;
-  height: 24px;
-}
-
-.ww-dropdown-icon {
-  width: 16px;
-  height: 16px;
 }
 
 .ww-logo-text {
