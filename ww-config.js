@@ -78,7 +78,7 @@ export default {
     },
     logoIcon: {
       label: { en: "Logo icon (if no URL)", fr: "Icône logo (si pas d'URL)" },
-      type: "Text",
+      type: "SystemIcon",
       section: "settings",
       defaultValue: "layers"
     },
@@ -130,7 +130,7 @@ export default {
               },
               icon: {
                 label: { en: "Icon" },
-                type: "Text"
+                type: "SystemIcon"
               },
               id: {
                 label: { en: "ID" },
@@ -192,7 +192,7 @@ export default {
           options: {
             item: {
               label: { label: { en: "Label", fr: "Label" }, type: "Text" },
-              icon: { label: { en: "Icon", fr: "Icône" }, type: "Text" },
+              icon: { label: { en: "Icon", fr: "Icône" }, type: "SystemIcon" },
               action: { label: { en: "Action", fr: "Action" }, type: "Text" }
             }
           }

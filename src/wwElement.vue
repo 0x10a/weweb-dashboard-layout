@@ -7,7 +7,7 @@
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
           <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
-            <span class="ww-icon">{{ getIconSymbol(content.logoIcon) }}</span>
+            <component :is="getIcon(content.logoIcon)" :size="24" />
           </div>
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
@@ -29,9 +29,15 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <span class="ww-nav-icon">{{ getIconSymbol(item.icon) }}</span>
+              <component :is="getIcon(item.icon)" :size="18" class="ww-nav-icon" />
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <span v-if="!isCollapsedState && item.children && item.children.length" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }">▸</span>
+              <component
+                v-if="!isCollapsedState && item.children && item.children.length"
+                :is="getIcon('chevron-right')"
+                :size="14"
+                class="ww-nav-arrow"
+                :class="{ 'ww-rotated': expandedItems.includes(item.id) }"
+              />
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                 {{ item.badge }}
               </span>
@@ -74,7 +80,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }">⋮</span>
+          <component v-if="!isCollapsedState" :is="getIcon('more-vertical')" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -92,12 +98,12 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+              <component :is="getIcon(menuItem.icon)" :size="16" />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <span class="ww-dropdown-icon">⏻</span>
+              <component :is="getIcon('log-out')" :size="16" />
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -111,11 +117,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            ☰
+            <component :is="getIcon('panel-left')" :size="18" />
           </button>
 
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <span class="ww-search-icon">🔍</span>
+            <component :is="getIcon('search')" :size="16" class="ww-search-icon" />
             <input
               type="text"
               :placeholder="content.searchPlaceholder"
@@ -128,14 +134,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            🔔
+            <component :is="getIcon('bell')" :size="18" />
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            ◐
+            <component :is="getIcon('sun')" :size="18" />
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            ⚙
+            <component :is="getIcon('settings')" :size="18" />
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -156,12 +162,12 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+                <component :is="getIcon(menuItem.icon)" :size="16" />
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
               <div class="ww-dropdown-item" @click.stop="handleLogout">
-                <span class="ww-dropdown-icon">⏻</span>
+                <component :is="getIcon('log-out')" :size="16" />
                 <span>{{ content.logoutLabel }}</span>
               </div>
             </div>
@@ -178,8 +184,14 @@
 </template>
 
 <script>
+import * as LucideIcons from 'lucide-vue-next';
+
 export default {
   name: 'DashboardLayout',
+
+  components: {
+    ...LucideIcons
+  },
 
   props: {
     content: {
@@ -291,130 +303,25 @@ export default {
   },
 
   methods: {
-    getIconSymbol(iconName) {
-      if (!iconName) return '●';
-      
-      // Remove prefixes like "lucide/"
-      let name = iconName;
+    getIcon(name) {
+      if (!name) return LucideIcons.Circle;
+
+      // Remove "lucide/" prefix if present
+      let iconName = name;
       if (name.includes('/')) {
-        name = name.split('/').pop();
+        iconName = name.split('/').pop();
       }
-      
-      const icons = {
-        'layers': '◇',
-        'layout-dashboard': '▦',
-        'shopping-bag': '🛒',
-        'trending-up': '📈',
-        'users': '👥',
-        'bar-chart-2': '📊',
-        'bar-chart-3': '📊',
-        'trello': '▤',
-        'circle': '●',
-        'user': '👤',
-        'bell': '🔔',
-        'log-out': '⏻',
-        'search': '🔍',
-        'sun': '☀',
-        'moon': '🌙',
-        'settings': '⚙',
-        'panel-left': '☰',
-        'more-vertical': '⋮',
-        'chevron-right': '▸',
-        'folder': '📁',
-        'file-text': '📄',
-        'image': '🖼',
-        'box': '◆',
-        'home': '🏠',
-        'mail': '✉',
-        'calendar': '📅',
-        'check': '✓',
-        'x': '✕',
-        'plus': '+',
-        'minus': '-',
-        'edit': '✎',
-        'trash': '🗑',
-        'download': '⬇',
-        'upload': '⬆',
-        'link': '🔗',
-        'external-link': '↗',
-        'copy': '📋',
-        'save': '💾',
-        'refresh': '⟳',
-        'lock': '🔒',
-        'unlock': '🔓',
-        'eye': '👁',
-        'eye-off': '🙈',
-        'heart': '❤',
-        'star': '⭐',
-        'bookmark': '🔖',
-        'tag': '🏷',
-        'clock': '🕐',
-        'map-pin': '📍',
-        'phone': '📞',
-        'message-circle': '💬',
-        'send': '➤',
-        'paperclip': '📎',
-        'printer': '🖨',
-        'credit-card': '💳',
-        'dollar-sign': '$',
-        'percent': '%',
-        'filter': '⧩',
-        'sort': '↕',
-        'grid': '⊞',
-        'list': '☰',
-        'menu': '☰',
-        'sidebar': '◧',
-        'layout': '⊞',
-        'maximize': '⛶',
-        'minimize': '⊟',
-        'zoom-in': '🔍',
-        'zoom-out': '🔍',
-        'play': '▶',
-        'pause': '⏸',
-        'stop': '⏹',
-        'volume': '🔊',
-        'mic': '🎤',
-        'camera': '📷',
-        'video': '🎥',
-        'wifi': '📶',
-        'bluetooth': '᛫',
-        'battery': '🔋',
-        'power': '⏻',
-        'activity': '📈',
-        'alert-circle': '⚠',
-        'alert-triangle': '⚠',
-        'info': 'ℹ',
-        'help-circle': '❓',
-        'check-circle': '✓',
-        'x-circle': '✕',
-        'loader': '◌',
-        'code': '</>',
-        'terminal': '>_',
-        'database': '🗄',
-        'server': '🖥',
-        'cloud': '☁',
-        'globe': '🌐',
-        'share': '↗',
-        'gift': '🎁',
-        'award': '🏆',
-        'flag': '🚩',
-        'target': '◎',
-        'zap': '⚡',
-        'shield': '🛡',
-        'key': '🔑',
-        'tool': '🔧',
-        'wrench': '🔧',
-        'package': '📦',
-        'truck': '🚚',
-        'shopping-cart': '🛒',
-        'briefcase': '💼',
-        'archive': '📥',
-        'inbox': '📥',
-        'layers-2': '◇',
-        'layout-grid': '⊞'
-      };
-      
-      return icons[name] || '●';
+
+      // Convert kebab-case to PascalCase
+      const pascalCase = iconName.split('-').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join('');
+
+      const icon = LucideIcons[pascalCase];
+      if (icon) return icon;
+
+      // Fallback to Circle
+      return LucideIcons.Circle;
     },
     
     getNavItemStyle(item) {
@@ -588,11 +495,6 @@ export default {
   justify-content: center;
 }
 
-.ww-icon {
-  font-size: 24px;
-  line-height: 1;
-}
-
 .ww-logo-text {
   font-size: 15px;
   font-weight: 600;
@@ -639,7 +541,6 @@ export default {
 
 .ww-nav-icon {
   flex-shrink: 0;
-  font-size: 18px;
 }
 
 .ww-nav-label {
@@ -772,7 +673,6 @@ export default {
 
 .ww-user-menu-btn {
   cursor: pointer;
-  font-size: 18px;
 }
 
 /* User Dropdown Menu */
@@ -842,10 +742,6 @@ export default {
   color: #0f172a;
 }
 
-.ww-dropdown-icon {
-  font-size: 16px;
-}
-
 /* Collapsed State */
 .ww-sidebar.ww-collapsed .ww-logo-text,
 .ww-sidebar.ww-collapsed .ww-section-label,
@@ -910,7 +806,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
 }
 
 .ww-topbar-btn:hover {
@@ -941,7 +836,6 @@ export default {
 .ww-search-icon {
   color: #94a3b8;
   flex-shrink: 0;
-  font-size: 14px;
 }
 
 .ww-search-input {
