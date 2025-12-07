@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-dashboard-layout" :style="rootStyle">
+    <div class="ww-dashboard-layout">
         <div class="ww-sidebar" :style="sidebarStyle">
             <div class="ww-sidebar-header">{{ content.logoText }}</div>
             <div class="ww-sidebar-nav">
@@ -7,7 +7,6 @@
                     v-for="(item, index) in menuItems" 
                     :key="index" 
                     class="ww-nav-item"
-                    @click="onMenuClick(item, index)"
                 >
                     {{ item.label }}
                 </div>
@@ -15,7 +14,9 @@
         </div>
         <div class="ww-main">
             <div v-if="content.showTopbar" class="ww-topbar">{{ content.pageTitle }}</div>
-            <wwLayout class="ww-content" path="children" direction="column" />
+            <div class="ww-content">
+                <slot></slot>
+            </div>
         </div>
     </div>
 </template>
@@ -24,19 +25,11 @@
 export default {
     props: {
         content: { type: Object, required: true },
-        wwFrontState: { type: Object, required: true },
-        wwElementState: { type: Object, required: true },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    emits: ['trigger-event'],
     computed: {
-        rootStyle() {
-            return {
-                minHeight: this.content.minHeight || '400px',
-            };
-        },
         sidebarStyle() {
             return {
                 width: this.content.sidebarWidth || '220px',
@@ -46,18 +39,6 @@ export default {
         menuItems() {
             return this.content.menuItems || [];
         },
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-    },
-    methods: {
-        onMenuClick(item, index) {
-            this.$emit('trigger-event', { name: 'menu-item-click', event: { item, index } });
-        },
     },
 };
 </script>
@@ -66,6 +47,7 @@ export default {
 .ww-dashboard-layout {
     display: flex;
     width: 100%;
+    min-height: 300px;
     background: #f1f5f9;
 }
 
@@ -116,6 +98,5 @@ export default {
 .ww-content {
     flex: 1;
     padding: 20px;
-    min-height: 200px;
 }
 </style>

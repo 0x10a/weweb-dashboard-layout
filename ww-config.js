@@ -1,31 +1,13 @@
 export default {
-    options: {
-        lazyHydrate: true,
-    },
-    inherit: [{ type: 'ww-layout' }],
+    type: 'wwObject',
     editor: {
         label: {
             en: 'Dashboard Layout',
             fr: 'Layout Dashboard',
         },
-        icon: 'border',
+        icon: 'view-grid',
     },
-    triggerEvents: [
-        {
-            name: 'menu-item-click',
-            label: { en: 'On menu item click' },
-            event: { item: {}, index: 0 },
-        },
-    ],
     properties: {
-        children: {
-            label: { en: 'Content' },
-            type: 'Info',
-            options: { text: 'Drop elements here' },
-            hidden: true,
-            defaultValue: [],
-            bindable: 'repeatable',
-        },
         logoText: {
             label: { en: 'Logo text' },
             type: 'Text',
@@ -58,7 +40,7 @@ export default {
             label: { en: 'Sidebar width' },
             type: 'Length',
             section: 'settings',
-            defaultValue: '240px',
+            defaultValue: '220px',
         },
         sidebarBgColor: {
             label: { en: 'Sidebar background' },
@@ -72,19 +54,12 @@ export default {
             section: 'settings',
             defaultValue: true,
         },
-        minHeight: {
-            label: { en: 'Min height' },
-            type: 'Length',
-            section: 'settings',
-            defaultValue: '400px',
-        },
         pageTitle: {
             label: { en: 'Page title' },
             type: 'Text',
             section: 'settings',
             defaultValue: 'Dashboard',
             bindable: true,
-            hidden: content => !content.showTopbar,
         },
     },
 };
