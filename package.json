@@ -1,16 +1,12 @@
 {
-    "name": "ww-dashboard-layout",
-    "version": "0.0.22",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/0x10a/weweb-dashboard-layout"
-    },
+    "name": "weweb-dashboard-layout",
+    "version": "0.0.23",
+    "private": true,
     "scripts": {
-        "build": "weweb build -- name=ww-dashboard-layout type=wwobject",
-        "serve": "weweb serve"
+        "serve": "weweb serve",
+        "build": "weweb build -- name=weweb-dashboard-layout type=wwobject"
     },
     "devDependencies": {
         "@weweb/cli": "latest"
-    },
-    "license": "MIT"
+    }
 }
