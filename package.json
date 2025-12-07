@@ -1,6 +1,6 @@
 {
     "name": "ww-dashboard-layout",
-    "version": "0.0.19",
+    "version": "0.0.20",
     "repository": {
         "type": "git",
         "url": "https://github.com/0x10a/weweb-dashboard-layout"
@@ -12,8 +12,5 @@
     "devDependencies": {
         "@weweb/cli": "latest"
     },
-    "license": "MIT",
-    "dependencies": {
-        "lucide-vue-next": "^0.454.0"
-    }
+    "license": "MIT"
 }
