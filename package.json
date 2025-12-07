@@ -1,15 +1,11 @@
 {
   "name": "weweb-dashboard-layout",
-  "version": "0.0.6",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/0x10a/weweb-dashboard-layout"
-  },
-  "license": "MIT",
+  "version": "0.0.7",
   "scripts": {
     "build": "weweb build name=weweb-dashboard-layout type=element",
     "serve": "weweb serve"
   },
+  "dependencies": {},
   "devDependencies": {
     "@weweb/cli": "latest"
   }
