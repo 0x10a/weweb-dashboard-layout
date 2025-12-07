@@ -1,10 +1,9 @@
 export default {
   options: {
     displayAllowedValues: ['flex', 'block', 'inline-block', 'inline-flex'],
+    lazyHydrate: true,
   },
-  inherit: {
-    type: 'ww-layout',
-  },
+  inherit: [{ type: 'ww-layout' }],
   editor: {
     label: {
       en: "Dashboard Layout",
