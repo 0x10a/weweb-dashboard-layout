@@ -1,6 +1,6 @@
 {
   "name": "weweb-dashboard-layout",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Professional dashboard layout component for WeWeb with sidebar navigation, topbar, and customizable themes - Shadcn UI style",
   "main": "ww-config.js",
   "scripts": {
