@@ -177,7 +177,7 @@
 
             <!-- Content Area (WeWeb Drop Zone) -->
             <main class="ww-content-area" :style="contentAreaStyle">
-                <wwLayout path="dashboardContent"></wwLayout>
+                <wwLayout path="dashboardContent" />
             </main>
         </div>
     </div>
@@ -260,20 +260,22 @@ const iconMap = {
 
 export default {
     props: {
-        content: {
-            type: Object,
-            required: true,
-        },
-        uid: {
-            type: String,
-            required: true,
-        },
+        content: { type: Object, required: true },
+        wwElementState: { type: Object, required: true },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    emits: ['trigger-event', 'update:content'],
+    emits: ['trigger-event'],
     setup(props, { emit }) {
+        const isEditing = computed(() => {
+            /* wwEditor:start */
+            return props.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        });
+
         const isCollapsedState = ref(false);
         const activeItemId = ref('');
         const expandedItems = ref([]);
@@ -429,6 +431,7 @@ export default {
         };
 
         return {
+            isEditing,
             isCollapsedState,
             activeItemId,
             expandedItems,
@@ -473,7 +476,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .ww-dashboard-layout {
     display: flex;
     min-height: 100vh;
