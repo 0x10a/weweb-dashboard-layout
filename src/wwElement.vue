@@ -1,538 +1,998 @@
 <template>
-    <div class="dashboard-layout" :style="layoutStyles">
-        <!-- Sidebar -->
-        <aside class="sidebar" :class="{ collapsed: isCollapsed }" :style="sidebarStyles">
-            <!-- Logo -->
-            <div class="logo-section">
-                <div class="logo" :style="{ color: content.logoColor }">
-                    <span class="logo-icon">◆</span>
-                    <span v-if="!isCollapsed" class="logo-text">{{ content.logoText }}</span>
-                </div>
-                <button 
-                    v-if="content.allowCollapse" 
-                    class="collapse-btn" 
-                    :style="{ color: content.sidebarMutedColor }"
-                    @click="toggleCollapse"
-                >
-                    {{ isCollapsed ? '→' : '←' }}
-                </button>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="nav-section">
-                <template v-for="(section, sectionName) in groupedMenuItems" :key="sectionName">
-                    <div v-if="!isCollapsed && sectionName" class="section-label" :style="{ color: content.sectionLabelColor }">
-                        {{ sectionName }}
-                    </div>
-                    <div 
-                        v-for="(item, index) in section" 
-                        :key="item.id || index"
-                        class="nav-item"
-                        :class="{ active: activeItemId === item.id }"
-                        :style="getNavItemStyles(item)"
-                        @click="handleMenuClick(item, index)"
-                        @mouseenter="hoveredItem = item.id"
-                        @mouseleave="hoveredItem = null"
-                    >
-                        <span class="nav-icon">{{ getIconSymbol(item.icon) }}</span>
-                        <span v-if="!isCollapsed" class="nav-label">{{ item.label }}</span>
-                        <span 
-                            v-if="!isCollapsed && item.badge" 
-                            class="nav-badge"
-                            :style="{ backgroundColor: content.badgeBgColor, color: content.badgeTextColor }"
-                        >
-                            {{ item.badge }}
-                        </span>
-                    </div>
-                </template>
-            </nav>
-
-            <!-- Promo Card -->
-            <div 
-                v-if="content.showPromoCard && !isCollapsed" 
-                class="promo-card"
-                :style="promoCardStyles"
-            >
-                <div class="promo-title">{{ content.promoTitle }}</div>
-                <div class="promo-description" :style="{ color: content.sidebarMutedColor }">
-                    {{ content.promoDescription }}
-                </div>
-                <button 
-                    class="promo-btn"
-                    :style="{ backgroundColor: content.promoButtonBg }"
-                    @click="handlePromoClick"
-                >
-                    {{ content.promoButtonText }}
-                </button>
-            </div>
-
-            <!-- User Section -->
-            <div class="user-section" :style="{ borderColor: content.sectionLabelColor }">
-                <div class="user-avatar">
-                    <img v-if="content.userAvatar" :src="content.userAvatar" alt="Avatar" />
-                    <span v-else class="avatar-placeholder">{{ userInitials }}</span>
-                </div>
-                <div v-if="!isCollapsed" class="user-info">
-                    <div class="user-name">{{ content.userName }}</div>
-                    <div class="user-email" :style="{ color: content.sidebarMutedColor }">{{ content.userEmail }}</div>
-                </div>
-                <button 
-                    v-if="!isCollapsed" 
-                    class="logout-btn" 
-                    :style="{ color: content.sidebarMutedColor }"
-                    @click="handleLogout"
-                    title="Logout"
-                >
-                    ⏻
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="main-wrapper">
-            <!-- Topbar -->
-            <header v-if="content.showTopbar" class="topbar" :style="topbarStyles">
-                <div class="topbar-left">
-                    <div v-if="content.showSearch" class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
-                            v-model="searchQuery"
-                            @input="handleSearch"
-                        />
-                    </div>
-                </div>
-                <div class="topbar-right">
-                    <button 
-                        v-if="content.showNotifications" 
-                        class="topbar-btn"
-                        @click="handleNotificationClick"
-                    >
-                        🔔
-                    </button>
-                    <button 
-                        v-if="content.showThemeToggle" 
-                        class="topbar-btn"
-                        @click="handleThemeToggle"
-                    >
-                        ◐
-                    </button>
-                    <button 
-                        v-if="content.showSettings" 
-                        class="topbar-btn"
-                        @click="handleSettingsClick"
-                    >
-                        ⚙
-                    </button>
-                </div>
-            </header>
-
-            <!-- Content Area -->
-            <main class="content-area" :style="contentAreaStyles">
-                <wwLayout path="dashboardContent"></wwLayout>
-            </main>
+  <div class="ww-dashboard-layout" :style="layoutStyles">
+    <!-- Sidebar -->
+    <aside class="ww-sidebar" :class="{ 'ww-collapsed': isCollapsedState }" :style="sidebarStyles">
+      <!-- Logo Header -->
+      <div class="ww-sidebar-header">
+        <div class="ww-logo-area">
+          <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
+          <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
+            <span class="ww-icon">{{ getIconSymbol(content.logoIcon) }}</span>
+          </div>
+          <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
+            {{ content.logoText }}
+          </span>
         </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="ww-sidebar-nav">
+        <div v-for="(section, sectionIndex) in menuSections" :key="sectionIndex" class="ww-nav-section">
+          <span v-if="!isCollapsedState && section.label" class="ww-section-label" :style="{ color: content.sectionLabelColor }">
+            {{ section.label }}
+          </span>
+
+          <div v-for="(item, index) in section.items" :key="item.id || index" class="ww-nav-item-wrapper">
+            <div
+              class="ww-nav-item"
+              :class="{ 'ww-active': activeItemId === item.id }"
+              :style="getNavItemStyle(item)"
+              @click="handleItemClick(item, index)"
+            >
+              <span class="ww-nav-icon">{{ getIconSymbol(item.icon) }}</span>
+              <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
+              <span v-if="!isCollapsedState && item.children && item.children.length" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }">▸</span>
+              <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
+                {{ item.badge }}
+              </span>
+            </div>
+
+            <!-- Sub-menu -->
+            <div v-if="item.children && item.children.length && expandedItems.includes(item.id) && !isCollapsedState" class="ww-nav-submenu">
+              <div
+                v-for="(child, childIndex) in item.children"
+                :key="child.id || childIndex"
+                class="ww-nav-subitem"
+                :class="{ 'ww-active': activeItemId === child.id }"
+                :style="getSubItemStyle(child)"
+                @click.stop="handleSubItemClick(child, childIndex)"
+              >
+                {{ child.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="ww-sidebar-footer">
+        <!-- Promo Card -->
+        <div v-if="!isCollapsedState && content.showPromoCard" class="ww-promo-card" :style="promoCardStyle">
+          <div class="ww-promo-content">
+            <strong :style="{ color: content.textColor }">{{ content.promoTitle }}</strong>
+            <p :style="{ color: content.mutedTextColor }">{{ content.promoDescription }}</p>
+          </div>
+          <button class="ww-promo-btn" :style="promoBtnStyle" @click="handlePromoClick">
+            {{ content.promoButtonText }}
+          </button>
+        </div>
+
+        <!-- User Profile -->
+        <div class="ww-user-section" @click="toggleUserMenu">
+          <img :src="content.userAvatar" alt="User" class="ww-user-avatar" />
+          <div v-if="!isCollapsedState" class="ww-user-info">
+            <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
+            <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
+          </div>
+          <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }">⋮</span>
+          
+          <!-- User Dropdown Menu -->
+          <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
+            <div class="ww-dropdown-header">
+              <img :src="content.userAvatar" alt="User" class="ww-dropdown-avatar" />
+              <div class="ww-dropdown-user-info">
+                <span class="ww-dropdown-name">{{ content.userName }}</span>
+                <span class="ww-dropdown-email">{{ content.userEmail }}</span>
+              </div>
+            </div>
+            <div class="ww-dropdown-divider"></div>
+            <div
+              v-for="(menuItem, idx) in content.userMenuItems"
+              :key="idx"
+              class="ww-dropdown-item"
+              @click.stop="handleUserMenuClick(menuItem)"
+            >
+              <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+              <span>{{ menuItem.label }}</span>
+            </div>
+            <div class="ww-dropdown-divider"></div>
+            <div class="ww-dropdown-item" @click.stop="handleLogout">
+              <span class="ww-dropdown-icon">⏻</span>
+              <span>{{ content.logoutLabel }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="ww-main-area" :style="mainAreaStyle">
+      <!-- Top Bar -->
+      <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
+        <div class="ww-topbar-left">
+          <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
+            ☰
+          </button>
+
+          <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
+            <span class="ww-search-icon">🔍</span>
+            <input
+              type="text"
+              :placeholder="content.searchPlaceholder"
+              class="ww-search-input"
+              v-model="searchQuery"
+              @input="handleSearch"
+            />
+          </div>
+        </div>
+
+        <div class="ww-topbar-right">
+          <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
+            🔔
+            <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
+          </button>
+          <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
+            ◐
+          </button>
+          <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
+            ⚙
+          </button>
+          <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
+            <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
+
+            <!-- Topbar User Dropdown Menu -->
+            <div v-if="showTopbarMenu" class="ww-topbar-dropdown">
+              <div class="ww-dropdown-header">
+                <img :src="content.userAvatar" alt="User" class="ww-dropdown-avatar" />
+                <div class="ww-dropdown-user-info">
+                  <span class="ww-dropdown-name">{{ content.userName }}</span>
+                  <span class="ww-dropdown-email">{{ content.userEmail }}</span>
+                </div>
+              </div>
+              <div class="ww-dropdown-divider"></div>
+              <div
+                v-for="(menuItem, idx) in content.userMenuItems"
+                :key="idx"
+                class="ww-dropdown-item"
+                @click.stop="handleUserMenuClick(menuItem)"
+              >
+                <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+                <span>{{ menuItem.label }}</span>
+              </div>
+              <div class="ww-dropdown-divider"></div>
+              <div class="ww-dropdown-item" @click.stop="handleLogout">
+                <span class="ww-dropdown-icon">⏻</span>
+                <span>{{ content.logoutLabel }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area (WeWeb Drop Zone) -->
+      <main class="ww-content-area" :style="contentAreaStyle">
+        <wwLayout path="dashboardContent"></wwLayout>
+      </main>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props: {
-        content: { type: Object, required: true },
-        wwElementState: { type: Object, required: true },
+  name: 'DashboardLayout',
+
+  props: {
+    content: {
+      type: Object,
+      default: () => ({})
     },
-    emits: ["update:content", "trigger-event"],
-    data() {
-        return {
-            isCollapsed: false,
-            activeItemId: null,
-            hoveredItem: null,
-            searchQuery: "",
-        };
+    uid: {
+      type: String,
+      default: ''
+    }
+  },
+
+  emits: ['trigger-event', 'update:content'],
+
+  data() {
+    return {
+      isCollapsedState: false,
+      activeItemId: '',
+      expandedItems: [],
+      showUserMenu: false,
+      showTopbarMenu: false,
+      searchQuery: ''
+    };
+  },
+
+  computed: {
+    layoutStyles() {
+      return {
+        '--layout-bg': this.content.sidebarBgColor || '#F4F4F6'
+      };
     },
-    computed: {
-        layoutStyles() {
-            return {
-                "--sidebar-width": this.isCollapsed ? this.content.collapsedWidth : this.content.sidebarWidth,
-            };
-        },
-        sidebarStyles() {
-            return {
-                width: this.isCollapsed ? this.content.collapsedWidth : this.content.sidebarWidth,
-                backgroundColor: this.content.sidebarBgColor,
-                color: this.content.sidebarTextColor,
-            };
-        },
-        topbarStyles() {
-            return {
-                backgroundColor: this.content.topbarBgColor,
-            };
-        },
-        contentAreaStyles() {
-            return {
-                backgroundColor: this.content.contentBgColor,
-                borderRadius: this.content.contentBorderRadius,
-                marginTop: this.content.showTopbar ? "0" : this.content.contentMarginTop,
-            };
-        },
-        promoCardStyles() {
-            return {
-                backgroundColor: this.content.promoBgColor,
-                borderColor: this.content.promoBorderColor,
-            };
-        },
-        groupedMenuItems() {
-            const items = this.content.menuItems || [];
-            const groups = {};
-            items.forEach(item => {
-                const section = item.section || "";
-                if (!groups[section]) groups[section] = [];
-                groups[section].push(item);
-            });
-            return groups;
-        },
-        userInitials() {
-            const name = this.content.userName || "";
-            return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-        },
+    sidebarStyles() {
+      return {
+        backgroundColor: this.content.sidebarBgColor || '#F4F4F6',
+        width: this.isCollapsedState ? (this.content.collapsedWidth || '60px') : (this.content.sidebarWidth || '240px')
+      };
     },
-    methods: {
-        getIconSymbol(iconName) {
-            const icons = {
-                "layout-dashboard": "▦",
-                "bar-chart-3": "📊",
-                "folder": "📁",
-                "file-text": "📄",
-                "image": "🖼",
-                "settings": "⚙",
-                "circle": "●",
-                "box": "◆",
-            };
-            return icons[iconName] || "●";
-        },
-        getNavItemStyles(item) {
-            const isActive = this.activeItemId === item.id;
-            const isHovered = this.hoveredItem === item.id;
-            return {
-                backgroundColor: isActive ? this.content.activeItemBg : (isHovered ? this.content.hoverBgColor : "transparent"),
-                color: isActive ? this.content.activeItemColor : this.content.sidebarTextColor,
-            };
-        },
-        toggleCollapse() {
-            this.isCollapsed = !this.isCollapsed;
-            this.$emit("trigger-event", {
-                name: "toggle-collapse",
-                event: { collapsed: this.isCollapsed },
-            });
-        },
-        handleMenuClick(item, index) {
-            this.activeItemId = item.id;
-            this.$emit("trigger-event", {
-                name: "menu-item-click",
-                event: { item, index, route: item.route },
-            });
-        },
-        handleLogout() {
-            this.$emit("trigger-event", { name: "logout-click", event: {} });
-        },
-        handleSearch() {
-            this.$emit("trigger-event", {
-                name: "search",
-                event: { query: this.searchQuery },
-            });
-        },
-        handleNotificationClick() {
-            this.$emit("trigger-event", { name: "notification-click", event: {} });
-        },
-        handleThemeToggle() {
-            this.$emit("trigger-event", { name: "theme-toggle", event: {} });
-        },
-        handleSettingsClick() {
-            this.$emit("trigger-event", { name: "settings-click", event: {} });
-        },
-        handlePromoClick() {
-            this.$emit("trigger-event", { name: "promo-click", event: {} });
-        },
+    mainAreaStyle() {
+      return {
+        borderTopLeftRadius: this.content.contentBorderRadius || '12px',
+        marginTop: this.content.contentMarginTop || '0px',
+        backgroundColor: '#fff'
+      };
     },
+    contentAreaStyle() {
+      return {
+        backgroundColor: this.content.contentBgColor || '#fff'
+      };
+    },
+    topbarStyle() {
+      return {
+        borderTopLeftRadius: this.content.contentBorderRadius || '12px'
+      };
+    },
+    searchContainerStyle() {
+      return {
+        backgroundColor: this.content.searchBgColor || '#f1f5f9'
+      };
+    },
+    badgeStyle() {
+      return {
+        backgroundColor: this.content.badgeBgColor || '#0f172a',
+        color: this.content.badgeTextColor || '#fff'
+      };
+    },
+    promoCardStyle() {
+      return {
+        backgroundColor: this.content.promoCardBg || '#fff'
+      };
+    },
+    promoBtnStyle() {
+      return {
+        backgroundColor: this.content.promoBtnBg || '#0f172a',
+        color: this.content.promoBtnColor || '#fff'
+      };
+    },
+    menuSections() {
+      const items = this.content.menuItems || [];
+      const sections = {};
+
+      items.forEach(item => {
+        const sectionLabel = item.section || 'Menu';
+        if (!sections[sectionLabel]) {
+          sections[sectionLabel] = {
+            label: sectionLabel,
+            items: []
+          };
+        }
+        sections[sectionLabel].items.push(item);
+      });
+
+      return Object.values(sections);
+    }
+  },
+
+  watch: {
+    'content.isCollapsed': {
+      handler(newVal) {
+        this.isCollapsedState = newVal;
+      },
+      immediate: true
+    },
+    'content.activeItemId': {
+      handler(newVal) {
+        this.activeItemId = newVal;
+      },
+      immediate: true
+    }
+  },
+
+  methods: {
+    getIconSymbol(iconName) {
+      if (!iconName) return '●';
+      
+      // Remove prefixes like "lucide/"
+      let name = iconName;
+      if (name.includes('/')) {
+        name = name.split('/').pop();
+      }
+      
+      const icons = {
+        'layers': '◇',
+        'layout-dashboard': '▦',
+        'shopping-bag': '🛒',
+        'trending-up': '📈',
+        'users': '👥',
+        'bar-chart-2': '📊',
+        'bar-chart-3': '📊',
+        'trello': '▤',
+        'circle': '●',
+        'user': '👤',
+        'bell': '🔔',
+        'log-out': '⏻',
+        'search': '🔍',
+        'sun': '☀',
+        'moon': '🌙',
+        'settings': '⚙',
+        'panel-left': '☰',
+        'more-vertical': '⋮',
+        'chevron-right': '▸',
+        'folder': '📁',
+        'file-text': '📄',
+        'image': '🖼',
+        'box': '◆',
+        'home': '🏠',
+        'mail': '✉',
+        'calendar': '📅',
+        'check': '✓',
+        'x': '✕',
+        'plus': '+',
+        'minus': '-',
+        'edit': '✎',
+        'trash': '🗑',
+        'download': '⬇',
+        'upload': '⬆',
+        'link': '🔗',
+        'external-link': '↗',
+        'copy': '📋',
+        'save': '💾',
+        'refresh': '⟳',
+        'lock': '🔒',
+        'unlock': '🔓',
+        'eye': '👁',
+        'eye-off': '🙈',
+        'heart': '❤',
+        'star': '⭐',
+        'bookmark': '🔖',
+        'tag': '🏷',
+        'clock': '🕐',
+        'map-pin': '📍',
+        'phone': '📞',
+        'message-circle': '💬',
+        'send': '➤',
+        'paperclip': '📎',
+        'printer': '🖨',
+        'credit-card': '💳',
+        'dollar-sign': '$',
+        'percent': '%',
+        'filter': '⧩',
+        'sort': '↕',
+        'grid': '⊞',
+        'list': '☰',
+        'menu': '☰',
+        'sidebar': '◧',
+        'layout': '⊞',
+        'maximize': '⛶',
+        'minimize': '⊟',
+        'zoom-in': '🔍',
+        'zoom-out': '🔍',
+        'play': '▶',
+        'pause': '⏸',
+        'stop': '⏹',
+        'volume': '🔊',
+        'mic': '🎤',
+        'camera': '📷',
+        'video': '🎥',
+        'wifi': '📶',
+        'bluetooth': '᛫',
+        'battery': '🔋',
+        'power': '⏻',
+        'activity': '📈',
+        'alert-circle': '⚠',
+        'alert-triangle': '⚠',
+        'info': 'ℹ',
+        'help-circle': '❓',
+        'check-circle': '✓',
+        'x-circle': '✕',
+        'loader': '◌',
+        'code': '</>',
+        'terminal': '>_',
+        'database': '🗄',
+        'server': '🖥',
+        'cloud': '☁',
+        'globe': '🌐',
+        'share': '↗',
+        'gift': '🎁',
+        'award': '🏆',
+        'flag': '🚩',
+        'target': '◎',
+        'zap': '⚡',
+        'shield': '🛡',
+        'key': '🔑',
+        'tool': '🔧',
+        'wrench': '🔧',
+        'package': '📦',
+        'truck': '🚚',
+        'shopping-cart': '🛒',
+        'briefcase': '💼',
+        'archive': '📥',
+        'inbox': '📥',
+        'layers-2': '◇',
+        'layout-grid': '⊞'
+      };
+      
+      return icons[name] || '●';
+    },
+    
+    getNavItemStyle(item) {
+      const isActive = this.activeItemId === item.id;
+      return {
+        backgroundColor: isActive ? (this.content.activeItemBg || 'rgba(0,0,0,0.06)') : 'transparent',
+        color: isActive ? (this.content.activeItemColor || '#0f172a') : (this.content.textColor || '#0f172a')
+      };
+    },
+    
+    getSubItemStyle(child) {
+      const isActive = this.activeItemId === child.id;
+      return {
+        color: isActive ? (this.content.activeItemColor || '#0f172a') : (this.content.mutedTextColor || '#64748b'),
+        backgroundColor: isActive ? (this.content.activeItemBg || 'rgba(0,0,0,0.06)') : 'transparent',
+        borderLeftColor: isActive ? (this.content.activeItemColor || '#0f172a') : 'transparent'
+      };
+    },
+    
+    toggleCollapse() {
+      this.isCollapsedState = !this.isCollapsedState;
+      this.$emit('trigger-event', {
+        name: 'toggle-collapse',
+        event: { collapsed: this.isCollapsedState }
+      });
+    },
+    
+    handleItemClick(item, index) {
+      if (item.children && item.children.length) {
+        const idx = this.expandedItems.indexOf(item.id);
+        if (idx > -1) {
+          this.expandedItems.splice(idx, 1);
+        } else {
+          this.expandedItems.push(item.id);
+        }
+      } else {
+        this.activeItemId = item.id;
+        this.$emit('trigger-event', {
+          name: 'menu-item-click',
+          event: { item, index, route: item.route || '' }
+        });
+      }
+    },
+    
+    handleSubItemClick(child, index) {
+      this.activeItemId = child.id;
+      this.$emit('trigger-event', {
+        name: 'menu-item-click',
+        event: { item: child, index, route: child.route || '' }
+      });
+    },
+    
+    toggleUserMenu() {
+      this.showUserMenu = !this.showUserMenu;
+      this.showTopbarMenu = false;
+    },
+    
+    handleUserMenuClick(menuItem) {
+      this.showUserMenu = false;
+      this.showTopbarMenu = false;
+      this.$emit('trigger-event', {
+        name: 'user-menu-click',
+        event: { item: menuItem, action: menuItem.action || '' }
+      });
+    },
+    
+    handleLogout() {
+      this.showUserMenu = false;
+      this.showTopbarMenu = false;
+      this.$emit('trigger-event', {
+        name: 'logout-click',
+        event: {}
+      });
+    },
+    
+    handlePromoClick() {
+      this.$emit('trigger-event', {
+        name: 'promo-click',
+        event: {}
+      });
+    },
+    
+    handleSearch() {
+      this.$emit('trigger-event', {
+        name: 'search',
+        event: { query: this.searchQuery }
+      });
+    },
+    
+    handleNotificationClick() {
+      this.$emit('trigger-event', {
+        name: 'notification-click',
+        event: {}
+      });
+    },
+    
+    handleThemeToggle() {
+      this.$emit('trigger-event', {
+        name: 'theme-toggle',
+        event: {}
+      });
+    },
+    
+    handleSettingsClick() {
+      this.$emit('trigger-event', {
+        name: 'settings-click',
+        event: {}
+      });
+    }
+  }
 };
 </script>
 
 <style scoped>
-.dashboard-layout {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+/* ========== LAYOUT ========== */
+.ww-dashboard-layout {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  width: 100% !important;
+  min-height: 100vh;
+  background-color: var(--layout-bg, #F4F4F6) !important;
 }
 
-/* Sidebar */
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    transition: width 0.3s ease;
-    overflow: hidden;
+/* ========== SIDEBAR ========== */
+.ww-sidebar {
+  grid-column: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s ease;
+  overflow: hidden;
 }
 
-.sidebar.collapsed {
-    align-items: center;
+.ww-sidebar:hover {
+  overflow-y: auto;
 }
 
-/* Logo */
-.logo-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.ww-sidebar::-webkit-scrollbar {
+  width: 4px;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 700;
+.ww-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
 }
 
-.logo-icon {
-    font-size: 24px;
+/* Header */
+.ww-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 16px 8px 16px;
+  min-height: 49px;
 }
 
-.collapse-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: background 0.2s;
+.ww-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.collapse-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.ww-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.ww-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.ww-logo-text {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* Navigation */
-.nav-section {
-    flex: 1;
-    padding: 16px 8px;
-    overflow-y: auto;
+.ww-sidebar-nav {
+  flex: 1;
+  padding: 8px 12px;
 }
 
-.section-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 16px 12px 8px;
+.ww-nav-section {
+  margin-bottom: 8px;
 }
 
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 2px;
+.ww-section-label {
+  display: block;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.collapsed .nav-item {
-    justify-content: center;
-    padding: 12px;
+.ww-nav-item-wrapper {
+  position: relative;
 }
 
-.nav-icon {
-    font-size: 18px;
-    flex-shrink: 0;
+.ww-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  border-radius: 6px;
 }
 
-.nav-label {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 500;
+.ww-nav-item:hover {
+  background: rgba(0,0,0,0.04);
 }
 
-.nav-badge {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
+.ww-nav-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.ww-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-nav-arrow {
+  transition: transform 0.2s ease;
+}
+
+.ww-nav-arrow.ww-rotated {
+  transform: rotate(90deg);
+}
+
+.ww-nav-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Submenu */
+.ww-nav-submenu {
+  padding-left: 44px;
+}
+
+.ww-nav-subitem {
+  position: relative;
+  padding: 8px 16px 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  transition: all 0.15s ease;
+}
+
+.ww-nav-subitem:hover {
+  color: #0f172a;
+}
+
+/* Footer */
+.ww-sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
 }
 
 /* Promo Card */
-.promo-card {
-    margin: 16px;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid;
+.ww-promo-card {
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-.promo-title {
-    font-weight: 600;
-    margin-bottom: 8px;
+.ww-promo-content {
+  margin-bottom: 12px;
 }
 
-.promo-description {
-    font-size: 13px;
-    margin-bottom: 12px;
-    line-height: 1.4;
+.ww-promo-content strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
 }
 
-.promo-btn {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+.ww-promo-content p {
+  font-size: 11px;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.promo-btn:hover {
-    opacity: 0.9;
+.ww-promo-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ww-promo-btn:hover {
+  opacity: 0.9;
 }
 
 /* User Section */
-.user-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.ww-user-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    overflow: hidden;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.ww-user-section:hover {
+  background: rgba(0,0,0,0.04);
 }
 
-.user-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.ww-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.avatar-placeholder {
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
+.ww-user-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.user-info {
-    flex: 1;
-    min-width: 0;
+.ww-user-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.user-name {
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.ww-user-email {
+  display: block;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.user-email {
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.ww-user-menu-btn {
+  cursor: pointer;
+  font-size: 18px;
 }
 
-.logout-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: background 0.2s;
+/* User Dropdown Menu */
+.ww-user-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  margin-bottom: 8px;
+  padding: 8px 0;
+  z-index: 1000;
 }
 
-.logout-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.ww-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
 }
 
-/* Main Wrapper */
-.main-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+.ww-dropdown-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-/* Topbar */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.ww-dropdown-user-info {
+  flex: 1;
 }
 
-.topbar-left {
-    flex: 1;
+.ww-dropdown-name {
+  display: block;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f1f5f9;
-    padding: 8px 16px;
-    border-radius: 8px;
-    max-width: 400px;
+.ww-dropdown-email {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
 }
 
-.search-icon {
-    font-size: 14px;
+.ww-dropdown-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 4px 0;
 }
 
-.search-box input {
-    border: none;
-    background: none;
-    outline: none;
-    flex: 1;
-    font-size: 14px;
+.ww-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.ww-dropdown-item:hover {
+  background: #f8fafc;
+  color: #0f172a;
 }
 
-.topbar-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: background 0.2s;
+.ww-dropdown-icon {
+  font-size: 16px;
 }
 
-.topbar-btn:hover {
-    background: #f1f5f9;
+/* Collapsed State */
+.ww-sidebar.ww-collapsed .ww-logo-text,
+.ww-sidebar.ww-collapsed .ww-section-label,
+.ww-sidebar.ww-collapsed .ww-nav-label,
+.ww-sidebar.ww-collapsed .ww-nav-arrow,
+.ww-sidebar.ww-collapsed .ww-nav-badge,
+.ww-sidebar.ww-collapsed .ww-nav-submenu,
+.ww-sidebar.ww-collapsed .ww-promo-card,
+.ww-sidebar.ww-collapsed .ww-user-info,
+.ww-sidebar.ww-collapsed .ww-user-menu-btn {
+  display: none;
 }
 
-/* Content Area */
-.content-area {
-    flex: 1;
-    margin: 16px;
-    padding: 24px;
-    min-height: 0;
-    overflow: auto;
+.ww-sidebar.ww-collapsed .ww-nav-item {
+  justify-content: center;
+  padding: 12px;
+}
+
+.ww-sidebar.ww-collapsed .ww-user-section {
+  justify-content: center;
+}
+
+.ww-sidebar.ww-collapsed .ww-sidebar-header {
+  justify-content: center;
+}
+
+/* ========== MAIN AREA ========== */
+.ww-main-area {
+  grid-column: 2;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* Top Bar */
+.ww-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.ww-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ww-topbar-btn {
+  position: relative;
+  background: none;
+  border: none;
+  color: #64748b;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.ww-topbar-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.ww-topbar-btn.ww-notification .ww-notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.ww-search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 280px;
+}
+
+.ww-search-icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.ww-search-input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.ww-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.ww-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ww-topbar-profile {
+  position: relative;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.ww-topbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ww-topbar-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  margin-top: 8px;
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 220px;
+}
+
+/* ========== CONTENT AREA ========== */
+.ww-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
 }
 </style>
