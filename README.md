@@ -24,7 +24,7 @@ A professional dashboard layout component for WeWeb with sidebar navigation, top
 
 1. Go to **Plugins & Extensions** > **Extensions**
 2. Click **Add custom component**
-3. Enter the GitHub repository URL: `https://github.com/YOUR_USERNAME/weweb-dashboard-layout`
+3. Enter the GitHub repository URL: `https://github.com/0x10a/weweb-dashboard-layout`
 4. Click **Add**
 5. The component will appear in your elements panel under "Custom"
 
@@ -32,7 +32,7 @@ A professional dashboard layout component for WeWeb with sidebar navigation, top
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/weweb-dashboard-layout.git
+git clone https://github.com/0x10a/weweb-dashboard-layout.git
 cd weweb-dashboard-layout
 
 # Install dependencies
