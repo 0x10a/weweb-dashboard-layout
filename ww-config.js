@@ -72,6 +72,12 @@ export default {
             section: 'settings',
             defaultValue: true,
         },
+        minHeight: {
+            label: { en: 'Min height' },
+            type: 'Length',
+            section: 'settings',
+            defaultValue: '400px',
+        },
         pageTitle: {
             label: { en: 'Page title' },
             type: 'Text',
