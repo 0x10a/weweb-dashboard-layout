@@ -78,9 +78,9 @@ export default {
     },
     logoIcon: {
       label: { en: "Logo icon (if no URL)", fr: "Icône logo (si pas d'URL)" },
-      type: "Text",
+      type: "Icon",
       section: "settings",
-      defaultValue: "layers"
+      defaultValue: { icon: "wwi wwi-layers", color: "#0f172a" }
     },
     logoText: {
       label: { en: "Logo text", fr: "Texte du logo" },
@@ -130,7 +130,7 @@ export default {
               },
               icon: {
                 label: { en: "Icon" },
-                type: "Text"
+                type: "Icon"
               },
               id: {
                 label: { en: "ID" },
@@ -192,7 +192,7 @@ export default {
           options: {
             item: {
               label: { label: { en: "Label", fr: "Label" }, type: "Text" },
-              icon: { label: { en: "Icon", fr: "Icône" }, type: "Text" },
+              icon: { label: { en: "Icon", fr: "Icône" }, type: "Icon" },
               action: { label: { en: "Action", fr: "Action" }, type: "Text" }
             }
           }
