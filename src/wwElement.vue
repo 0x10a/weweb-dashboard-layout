@@ -111,7 +111,7 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            ☰
+            <LucideMenu :size="20" />
           </button>
 
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
@@ -178,8 +178,14 @@
 </template>
 
 <script>
+import { Menu } from 'lucide-vue-next';
+
 export default {
   name: 'DashboardLayout',
+
+  components: {
+    LucideMenu: Menu
+  },
 
   props: {
     content: {
