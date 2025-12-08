@@ -185,20 +185,7 @@ export default {
   name: 'DashboardLayout',
 
   props: {
-    uid: {
-      type: String,
-      required: true
-    },
-    content: {
-      type: Object,
-      required: true
-    },
-    /* wwEditor:start */
-    wwEditorState: {
-      type: Object,
-      required: true
-    }
-    /* wwEditor:end */
+    content: { type: Object, required: true }
   },
 
   emits: ['trigger-event', 'update:content'],
