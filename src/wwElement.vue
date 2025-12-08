@@ -27,9 +27,9 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <span class="ww-nav-icon">{{ getIconSymbol(item.icon) }}</span>
+              <component :is="getIconComponent(item.icon)" :size="18" class="ww-nav-icon" />
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <span v-if="!isCollapsedState && item.children && item.children.length" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }">▸</span>
+              <ChevronRight v-if="!isCollapsedState && item.children && item.children.length" :size="14" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }" />
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                 {{ item.badge }}
               </span>
@@ -72,7 +72,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <span v-if="!isCollapsedState" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }">⋮</span>
+          <MoreVertical v-if="!isCollapsedState" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -90,12 +90,12 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+              <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <span class="ww-dropdown-icon">⏻</span>
+              <LogOut :size="16" class="ww-dropdown-icon" />
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -109,11 +109,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            ☰
+            <PanelLeft :size="18" />
           </button>
 
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <span class="ww-search-icon">🔍</span>
+            <Search :size="16" class="ww-search-icon" />
             <input
               type="text"
               :placeholder="content.searchPlaceholder"
@@ -126,14 +126,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            🔔
+            <Bell :size="18" />
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            ◐
+            <Sun :size="18" />
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            ⚙
+            <Settings :size="18" />
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -154,12 +154,12 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <span class="ww-dropdown-icon">{{ getIconSymbol(menuItem.icon) }}</span>
+                <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
               <div class="ww-dropdown-item" @click.stop="handleLogout">
-                <span class="ww-dropdown-icon">⏻</span>
+                <LogOut :size="16" class="ww-dropdown-icon" />
                 <span>{{ content.logoutLabel }}</span>
               </div>
             </div>
@@ -176,13 +176,47 @@
 </template>
 
 <script>
-import { Layers } from 'lucide-vue-next';
+import {
+  Layers,
+  LayoutDashboard,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  BarChart2,
+  Trello,
+  Circle,
+  User,
+  Bell,
+  LogOut,
+  Search,
+  Sun,
+  Settings,
+  PanelLeft,
+  MoreVertical,
+  ChevronRight
+} from 'lucide-vue-next';
 
 export default {
   name: 'DashboardLayout',
 
   components: {
-    Layers
+    Layers,
+    LayoutDashboard,
+    ShoppingBag,
+    TrendingUp,
+    Users,
+    BarChart2,
+    Trello,
+    Circle,
+    User,
+    Bell,
+    LogOut,
+    Search,
+    Sun,
+    Settings,
+    PanelLeft,
+    MoreVertical,
+    ChevronRight
   },
 
   props: {
@@ -295,6 +329,39 @@ export default {
   },
 
   methods: {
+    getIconComponent(iconName) {
+      if (!iconName) return 'Circle';
+      
+      // Remove prefixes like "lucide/"
+      let name = iconName;
+      if (name.includes('/')) {
+        name = name.split('/').pop();
+      }
+      
+      // Map icon names to components
+      const iconMap = {
+        'layers': 'Layers',
+        'layout-dashboard': 'LayoutDashboard',
+        'shopping-bag': 'ShoppingBag',
+        'trending-up': 'TrendingUp',
+        'users': 'Users',
+        'bar-chart-2': 'BarChart2',
+        'bar-chart-3': 'BarChart2',
+        'trello': 'Trello',
+        'circle': 'Circle',
+        'user': 'User',
+        'bell': 'Bell',
+        'log-out': 'LogOut',
+        'search': 'Search',
+        'sun': 'Sun',
+        'settings': 'Settings',
+        'panel-left': 'PanelLeft',
+        'more-vertical': 'MoreVertical',
+        'chevron-right': 'ChevronRight'
+      };
+      
+      return iconMap[name] || 'Circle';
+    },
     getIconSymbol(iconName) {
       if (!iconName) return '●';
       
