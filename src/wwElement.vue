@@ -574,7 +574,7 @@ export default {
   gap: 10px;
   padding: 10px 16px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s;
   font-size: 13px;
   border-radius: 6px;
 }
