@@ -171,7 +171,10 @@
 
       <!-- Content Area (WeWeb Drop Zone) -->
       <main class="ww-content-area" :style="contentAreaStyle">
-        <wwLayout path="dashboardContent"></wwLayout>
+        <div class="ww-content-placeholder">
+          <h2>Dashboard Content Area</h2>
+          <p>Add your content here via properties or custom code</p>
+        </div>
       </main>
     </div>
   </div>

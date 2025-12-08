@@ -1,6 +1,4 @@
 export default {
-  inherit: { type: 'ww-layout' },
-
   editor: {
     label: {
       en: "Dashboard Layout",
@@ -62,12 +60,6 @@ export default {
   ],
 
   properties: {
-    // ========== CONTENT SLOT (hidden, for wwLayout) ==========
-    dashboardContent: {
-      hidden: true,
-      defaultValue: [],
-    },
-
     // ========== LOGO SECTION ==========
     logoUrl: {
       label: { en: "Logo URL", fr: "URL du logo" },
