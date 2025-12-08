@@ -1,10 +1,10 @@
 {
     "name": "weweb-dashboard-layout",
-    "version": "0.0.38",
+    "version": "0.0.39",
     "private": true,
     "scripts": {
         "serve": "weweb serve",
-        "build": "weweb build name=weweb-dashboard-layout type=wwobject"
+        "build": "weweb build"
     },
     "devDependencies": {
         "@weweb/cli": "latest"

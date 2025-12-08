@@ -171,10 +171,7 @@
 
       <!-- Content Area (WeWeb Drop Zone) -->
       <main class="ww-content-area" :style="contentAreaStyle">
-        <div class="ww-content-placeholder">
-          <h2>Dashboard Content Area</h2>
-          <p>Add your content here via properties or custom code</p>
-        </div>
+        <wwLayout path="dashboardContent"></wwLayout>
       </main>
     </div>
   </div>
@@ -185,7 +182,14 @@ export default {
   name: 'DashboardLayout',
 
   props: {
-    content: { type: Object, required: true }
+    content: {
+      type: Object,
+      default: () => ({})
+    },
+    uid: {
+      type: String,
+      default: ''
+    }
   },
 
   emits: ['trigger-event', 'update:content'],
