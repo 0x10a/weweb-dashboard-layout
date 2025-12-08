@@ -365,10 +365,15 @@ export default {
     
     getNavItemStyle(item) {
       const isActive = this.activeItemId === item.id;
-      return {
-        backgroundColor: isActive ? (this.content.activeItemBg || 'rgba(0,0,0,0.06)') : 'transparent',
+      const style = {
         color: isActive ? (this.content.activeItemColor || '#0f172a') : (this.content.textColor || '#0f172a')
       };
+      
+      if (isActive) {
+        style.backgroundColor = this.content.activeItemBg || 'rgba(0,0,0,0.06)';
+      }
+      
+      return style;
     },
     
     getSubItemStyle(child) {
