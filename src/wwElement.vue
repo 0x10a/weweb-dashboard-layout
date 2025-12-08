@@ -6,9 +6,7 @@
       <div class="ww-sidebar-header">
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-          <div v-else class="ww-logo-icon" :style="{ color: content.logoColor }">
-            <span class="ww-icon">{{ getIconSymbol(content.logoIcon) }}</span>
-          </div>
+          <component v-else-if="logoIconComponent" :is="logoIconComponent" :size="24" class="ww-logo-icon" :style="{ color: content.logoColor }" />
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
           </span>
@@ -178,8 +176,14 @@
 </template>
 
 <script>
+import { Layers } from 'lucide-vue-next';
+
 export default {
   name: 'DashboardLayout',
+
+  components: {
+    Layers
+  },
 
   props: {
     content: {
@@ -206,6 +210,14 @@ export default {
   },
 
   computed: {
+    logoIconComponent() {
+      // Pour l'instant on supporte seulement Layers comme test
+      const iconName = this.content.logoIcon || 'layers';
+      if (iconName === 'layers') {
+        return 'Layers';
+      }
+      return null;
+    },
     layoutStyles() {
       return {
         '--layout-bg': this.content.sidebarBgColor || '#F4F4F6'
