@@ -601,11 +601,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.ww-icon :deep(svg) {
   width: 24px;
   height: 24px;
+}
+
+.ww-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  max-width: 24px;
+  max-height: 24px;
   stroke-width: 2;
 }
 
@@ -658,11 +662,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.ww-nav-icon :deep(svg) {
   width: 20px;
   height: 20px;
+}
+
+.ww-nav-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px;
+  max-height: 20px;
   stroke-width: 2;
 }
 
@@ -870,11 +878,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.ww-dropdown-icon :deep(svg) {
   width: 18px;
   height: 18px;
+}
+
+.ww-dropdown-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px;
+  max-height: 18px;
   stroke-width: 2;
 }
 
