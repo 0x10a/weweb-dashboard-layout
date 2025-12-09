@@ -6,7 +6,7 @@
       <div class="ww-sidebar-header">
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-          <span v-else v-html="getIconHtml(content.logoIcon, 24)" class="ww-logo-icon" :style="{ color: content.logoColor }"></span>
+          <component v-else :is="getIconComponent(content.logoIcon)" :size="24" class="ww-logo-icon" :style="{ color: content.logoColor }" />
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
           </span>
@@ -27,9 +27,9 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <span v-html="getIconHtml(item.icon, 18)" class="ww-nav-icon"></span>
+              <component :is="getIconComponent(item.icon)" :size="18" class="ww-nav-icon" />
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <span v-if="!isCollapsedState && item.children && item.children.length" v-html="getIconHtml('lucide/chevron-right', 14)" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }"></span>
+              <component v-if="!isCollapsedState && item.children && item.children.length" :is="'ChevronRight'" :size="14" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }" />
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                 {{ item.badge }}
               </span>
@@ -72,7 +72,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <span v-if="!isCollapsedState" v-html="getIconHtml('lucide/more-vertical', 16)" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }"></span>
+          <component v-if="!isCollapsedState" :is="'MoreVertical'" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -90,12 +90,12 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <span v-html="getIconHtml(menuItem.icon, 16)" class="ww-dropdown-icon"></span>
+              <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <span v-html="getIconHtml('lucide/log-out', 16)" class="ww-dropdown-icon"></span>
+              <component :is="'LogOut'" :size="16" class="ww-dropdown-icon" />
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -109,11 +109,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            <span v-html="getIconHtml('lucide/panel-left', 18)"></span>
+            <PanelLeft :size="18" />
           </button>
 
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <span v-html="getIconHtml('lucide/search', 16)" class="ww-search-icon"></span>
+            <Search :size="16" class="ww-search-icon" />
             <input
               type="text"
               :placeholder="content.searchPlaceholder"
@@ -126,14 +126,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            <span v-html="getIconHtml('lucide/bell', 18)"></span>
+            <Bell :size="18" />
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            <span v-html="getIconHtml('lucide/sun', 18)"></span>
+            <Sun :size="18" />
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            <span v-html="getIconHtml('lucide/settings', 18)"></span>
+            <Settings :size="18" />
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -201,14 +201,8 @@ export default {
       expandedItems: [],
       showUserMenu: false,
       showTopbarMenu: false,
-      searchQuery: '',
-      iconCache: {} // Cache pour stocker les icônes HTML
+      searchQuery: ''
     };
-  },
-
-  mounted() {
-    // Pré-charger toutes les icônes utilisées
-    this.loadAllIcons();
   },
 
   computed: {
@@ -297,108 +291,20 @@ export default {
   },
 
   methods: {
-    async loadAllIcons() {
-      const { getIcon } = wwLib.useIcons();
+    getIconComponent(iconName) {
+      if (!iconName) return 'Circle';
       
-      // Liste des icônes à pré-charger
-      const iconsToLoad = [
-        'lucide/layers',
-        'lucide/layout-dashboard',
-        'lucide/shopping-bag',
-        'lucide/trending-up',
-        'lucide/users',
-        'lucide/bar-chart-2',
-        'lucide/trello',
-        'lucide/circle',
-        'lucide/user',
-        'lucide/bell',
-        'lucide/log-out',
-        'lucide/search',
-        'lucide/sun',
-        'lucide/settings',
-        'lucide/panel-left',
-        'lucide/more-vertical',
-        'lucide/chevron-right'
-      ];
+      // Supprimer le préfixe lucide/ si présent
+      const cleanName = iconName.replace('lucide/', '');
       
-      // Ajouter les icônes du menu
-      if (this.content.menuItems) {
-        this.content.menuItems.forEach(item => {
-          if (item.icon) {
-            const iconName = item.icon.includes('/') ? item.icon : `lucide/${item.icon}`;
-            if (!iconsToLoad.includes(iconName)) {
-              iconsToLoad.push(iconName);
-            }
-          }
-        });
-      }
+      // Convertir en PascalCase (kebab-case -> PascalCase)
+      const componentName = cleanName
+        .split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('');
       
-      // Ajouter les icônes du menu utilisateur
-      if (this.content.userMenuItems) {
-        this.content.userMenuItems.forEach(item => {
-          if (item.icon) {
-            const iconName = item.icon.includes('/') ? item.icon : `lucide/${item.icon}`;
-            if (!iconsToLoad.includes(iconName)) {
-              iconsToLoad.push(iconName);
-            }
-          }
-        });
-      }
-      
-      // Charger toutes les icônes
-      for (const iconName of iconsToLoad) {
-        try {
-          const html = await getIcon(iconName);
-          if (html) {
-            this.iconCache[iconName] = html;
-          }
-        } catch (e) {
-          console.warn('Failed to load icon:', iconName);
-        }
-      }
-      
-      // Forcer un re-render
-      this.$forceUpdate();
-    },
-
-    getIconHtml(iconName, size = 24) {
-      if (!iconName) return this.getFallbackIcon(size);
-      
-      // Ensure lucide/ prefix
-      const fullIconName = iconName.includes('/') ? iconName : `lucide/${iconName}`;
-      
-      // Vérifier le cache
-      const cachedHtml = this.iconCache[fullIconName];
-      
-      if (cachedHtml) {
-        // Adjust the SVG size
-        return cachedHtml.replace(/<svg/, `<svg width="${size}" height="${size}"`);
-      }
-      
-      // Si pas dans le cache, charger de manière asynchrone
-      this.loadIcon(fullIconName);
-      
-      // Retourner un fallback en attendant
-      return this.getFallbackIcon(size);
-    },
-    
-    async loadIcon(iconName) {
-      if (this.iconCache[iconName]) return;
-      
-      try {
-        const { getIcon } = wwLib.useIcons();
-        const html = await getIcon(iconName);
-        if (html) {
-          this.iconCache[iconName] = html;
-          this.$forceUpdate();
-        }
-      } catch (e) {
-        console.warn('Icon not found:', iconName, e);
-      }
-    },
-    
-    getFallbackIcon(size) {
-      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`;
+      // Retourner le nom du composant s'il existe, sinon fallback
+      return this.$options.components[componentName] ? componentName : 'Circle';
     },
     
     getNavItemStyle(item) {
