@@ -201,8 +201,14 @@ export default {
       expandedItems: [],
       showUserMenu: false,
       showTopbarMenu: false,
-      searchQuery: ''
+      searchQuery: '',
+      iconCache: {} // Cache pour stocker les icônes HTML
     };
+  },
+
+  mounted() {
+    // Pré-charger toutes les icônes utilisées
+    this.loadAllIcons();
   },
 
   computed: {
@@ -291,26 +297,107 @@ export default {
   },
 
   methods: {
-    async getIconHtml(iconName, size = 24) {
-      if (!iconName) return '';
+    async loadAllIcons() {
+      const { getIcon } = wwLib.useIcons();
+      
+      // Liste des icônes à pré-charger
+      const iconsToLoad = [
+        'lucide/layers',
+        'lucide/layout-dashboard',
+        'lucide/shopping-bag',
+        'lucide/trending-up',
+        'lucide/users',
+        'lucide/bar-chart-2',
+        'lucide/trello',
+        'lucide/circle',
+        'lucide/user',
+        'lucide/bell',
+        'lucide/log-out',
+        'lucide/search',
+        'lucide/sun',
+        'lucide/settings',
+        'lucide/panel-left',
+        'lucide/more-vertical',
+        'lucide/chevron-right'
+      ];
+      
+      // Ajouter les icônes du menu
+      if (this.content.menuItems) {
+        this.content.menuItems.forEach(item => {
+          if (item.icon) {
+            const iconName = item.icon.includes('/') ? item.icon : `lucide/${item.icon}`;
+            if (!iconsToLoad.includes(iconName)) {
+              iconsToLoad.push(iconName);
+            }
+          }
+        });
+      }
+      
+      // Ajouter les icônes du menu utilisateur
+      if (this.content.userMenuItems) {
+        this.content.userMenuItems.forEach(item => {
+          if (item.icon) {
+            const iconName = item.icon.includes('/') ? item.icon : `lucide/${item.icon}`;
+            if (!iconsToLoad.includes(iconName)) {
+              iconsToLoad.push(iconName);
+            }
+          }
+        });
+      }
+      
+      // Charger toutes les icônes
+      for (const iconName of iconsToLoad) {
+        try {
+          const html = await getIcon(iconName);
+          if (html) {
+            this.iconCache[iconName] = html;
+          }
+        } catch (e) {
+          console.warn('Failed to load icon:', iconName);
+        }
+      }
+      
+      // Forcer un re-render
+      this.$forceUpdate();
+    },
+
+    getIconHtml(iconName, size = 24) {
+      if (!iconName) return this.getFallbackIcon(size);
+      
+      // Ensure lucide/ prefix
+      const fullIconName = iconName.includes('/') ? iconName : `lucide/${iconName}`;
+      
+      // Vérifier le cache
+      const cachedHtml = this.iconCache[fullIconName];
+      
+      if (cachedHtml) {
+        // Adjust the SVG size
+        return cachedHtml.replace(/<svg/, `<svg width="${size}" height="${size}"`);
+      }
+      
+      // Si pas dans le cache, charger de manière asynchrone
+      this.loadIcon(fullIconName);
+      
+      // Retourner un fallback en attendant
+      return this.getFallbackIcon(size);
+    },
+    
+    async loadIcon(iconName) {
+      if (this.iconCache[iconName]) return;
       
       try {
-        // Ensure lucide/ prefix
-        const fullIconName = iconName.includes('/') ? iconName : `lucide/${iconName}`;
-        
-        // Use WeWeb's icon system to load Lucide icons
         const { getIcon } = wwLib.useIcons();
-        const html = await getIcon(fullIconName);
-        
+        const html = await getIcon(iconName);
         if (html) {
-          // Adjust the SVG size
-          return html.replace(/<svg/, `<svg width="${size}" height="${size}"`);
+          this.iconCache[iconName] = html;
+          this.$forceUpdate();
         }
       } catch (e) {
         console.warn('Icon not found:', iconName, e);
       }
-      
-      // Fallback to circle icon
+    },
+    
+    getFallbackIcon(size) {
       return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`;
     },
     
