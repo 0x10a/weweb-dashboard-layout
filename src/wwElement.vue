@@ -6,7 +6,7 @@
       <div class="ww-sidebar-header">
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-          <component v-else :is="getIconComponent(content.logoIcon)" :size="24" class="ww-logo-icon" :style="{ color: content.logoColor }" />
+          <div v-else v-html="logoIconHtml" class="ww-logo-icon" :style="{ color: content.logoColor }"></div>
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
           </span>
@@ -27,9 +27,9 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <component :is="getIconComponent(item.icon)" :size="18" class="ww-nav-icon" />
+              <div v-html="getIconHtml(item.icon)" class="ww-nav-icon"></div>
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
-              <component v-if="!isCollapsedState && item.children && item.children.length" :is="'ChevronRight'" :size="14" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }" />
+              <div v-if="!isCollapsedState && item.children && item.children.length" v-html="staticIconsHtml.chevronRight" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }"></div>
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
                 {{ item.badge }}
               </span>
@@ -72,7 +72,7 @@
             <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
-          <component v-if="!isCollapsedState" :is="'MoreVertical'" :size="16" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }" />
+          <div v-if="!isCollapsedState" v-html="staticIconsHtml.moreVertical" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }"></div>
           
           <!-- User Dropdown Menu -->
           <div v-if="showUserMenu && !isCollapsedState" class="ww-user-dropdown">
@@ -90,12 +90,12 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
+              <div v-html="getIconHtml(menuItem.icon)" class="ww-dropdown-icon"></div>
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
             <div class="ww-dropdown-item" @click.stop="handleLogout">
-              <component :is="'LogOut'" :size="16" class="ww-dropdown-icon" />
+              <div v-html="staticIconsHtml.logOut" class="ww-dropdown-icon"></div>
               <span>{{ content.logoutLabel }}</span>
             </div>
           </div>
@@ -109,11 +109,11 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            <PanelLeft :size="18" />
+            <div v-html="staticIconsHtml.panelLeft"></div>
           </button>
 
           <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <Search :size="16" class="ww-search-icon" />
+            <div v-html="staticIconsHtml.search" class="ww-search-icon"></div>
             <input
               type="text"
               :placeholder="content.searchPlaceholder"
@@ -126,14 +126,14 @@
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            <Bell :size="18" />
+            <div v-html="staticIconsHtml.bell"></div>
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            <Sun :size="18" />
+            <div v-html="staticIconsHtml.sun"></div>
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            <Settings :size="18" />
+            <div v-html="staticIconsHtml.settings"></div>
           </button>
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
@@ -154,12 +154,12 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
+                <div v-html="getIconHtml(menuItem.icon)" class="ww-dropdown-icon"></div>
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
               <div class="ww-dropdown-item" @click.stop="handleLogout">
-                <LogOut :size="16" class="ww-dropdown-icon" />
+                <div v-html="staticIconsHtml.logOut" class="ww-dropdown-icon"></div>
                 <span>{{ content.logoutLabel }}</span>
               </div>
             </div>
@@ -176,68 +176,8 @@
 </template>
 
 <script>
-import {
-  Layers,
-  LayoutDashboard,
-  ShoppingBag,
-  TrendingUp,
-  Users,
-  BarChart2,
-  Trello,
-  Circle,
-  User,
-  Bell,
-  LogOut,
-  Search,
-  Sun,
-  Settings,
-  PanelLeft,
-  MoreVertical,
-  ChevronRight,
-  Star,
-  Package,
-  FileText,
-  Calendar,
-  MessageSquare,
-  Briefcase,
-  Home,
-  Folder,
-  Heart,
-  Activity
-} from 'lucide-vue-next';
-
 export default {
   name: 'DashboardLayout',
-
-  components: {
-    Layers,
-    LayoutDashboard,
-    ShoppingBag,
-    TrendingUp,
-    Users,
-    BarChart2,
-    Trello,
-    Circle,
-    User,
-    Bell,
-    LogOut,
-    Search,
-    Sun,
-    Settings,
-    PanelLeft,
-    MoreVertical,
-    ChevronRight,
-    Star,
-    Package,
-    FileText,
-    Calendar,
-    MessageSquare,
-    Briefcase,
-    Home,
-    Folder,
-    Heart,
-    Activity
-  },
 
   props: {
     content: {
@@ -259,8 +199,26 @@ export default {
       expandedItems: [],
       showUserMenu: false,
       showTopbarMenu: false,
-      searchQuery: ''
+      searchQuery: '',
+      // Icon HTML cache
+      logoIconHtml: null,
+      menuIconsHtml: {},
+      userMenuIconsHtml: {},
+      staticIconsHtml: {
+        panelLeft: null,
+        search: null,
+        bell: null,
+        sun: null,
+        settings: null,
+        moreVertical: null,
+        logOut: null,
+        chevronRight: null
+      }
     };
+  },
+
+  async mounted() {
+    await this.loadAllIcons();
   },
 
   computed: {
@@ -349,20 +307,72 @@ export default {
   },
 
   methods: {
-    getIconComponent(iconName) {
-      if (!iconName) return 'Circle';
+    async loadAllIcons() {
+      const { getIcon } = wwLib.useIcons();
       
-      // Supprimer le préfixe lucide/ si présent
-      const cleanName = iconName.replace('lucide/', '');
+      // Load static icons
+      const staticIcons = {
+        'panelLeft': 'lucide/panel-left',
+        'search': 'lucide/search',
+        'bell': 'lucide/bell',
+        'sun': 'lucide/sun',
+        'settings': 'lucide/settings',
+        'moreVertical': 'lucide/more-vertical',
+        'logOut': 'lucide/log-out',
+        'chevronRight': 'lucide/chevron-right'
+      };
       
-      // Convertir en PascalCase (kebab-case -> PascalCase)
-      const componentName = cleanName
-        .split('-')
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
+      for (const [key, iconPath] of Object.entries(staticIcons)) {
+        try {
+          this.staticIconsHtml[key] = await getIcon(iconPath);
+        } catch (e) {
+          console.warn('Failed to load static icon:', key);
+        }
+      }
       
-      // Retourner le nom du composant s'il existe, sinon fallback
-      return this.$options.components[componentName] ? componentName : 'Circle';
+      // Load logo icon
+      if (this.content.logoIcon) {
+        try {
+          this.logoIconHtml = await getIcon(this.content.logoIcon);
+        } catch (e) {
+          console.warn('Failed to load logo icon');
+        }
+      }
+      
+      // Load menu item icons
+      if (this.content.menuItems) {
+        for (const item of this.content.menuItems) {
+          if (item.icon) {
+            try {
+              this.$set(this.menuIconsHtml, item.icon, await getIcon(item.icon));
+            } catch (e) {
+              console.warn('Failed to load menu icon:', item.icon);
+            }
+          }
+        }
+      }
+      
+      // Load user menu icons
+      if (this.content.userMenuItems) {
+        for (const item of this.content.userMenuItems) {
+          if (item.icon) {
+            try {
+              this.$set(this.userMenuIconsHtml, item.icon, await getIcon(item.icon));
+            } catch (e) {
+              console.warn('Failed to load user menu icon:', item.icon);
+            }
+          }
+        }
+      }
+    },
+    
+    getIconHtml(iconName) {
+      // Check menu icons
+      if (this.menuIconsHtml[iconName]) return this.menuIconsHtml[iconName];
+      // Check user menu icons
+      if (this.userMenuIconsHtml[iconName]) return this.userMenuIconsHtml[iconName];
+      // Fallback circle
+      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
     },
     
     getNavItemStyle(item) {
