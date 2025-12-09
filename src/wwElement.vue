@@ -27,7 +27,8 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <div v-html="getIconHtml(item.icon)" class="ww-nav-icon"></div>
+              <div v-if="menuIconsHtml[item.icon]" v-html="menuIconsHtml[item.icon]" class="ww-nav-icon"></div>
+              <div v-else v-html="fallbackIcon" class="ww-nav-icon"></div>
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
               <div v-if="!isCollapsedState && item.children && item.children.length" v-html="staticIconsHtml.chevronRight" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }"></div>
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
@@ -90,7 +91,8 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <div v-html="getIconHtml(menuItem.icon)" class="ww-dropdown-icon"></div>
+              <div v-if="userMenuIconsHtml[menuItem.icon]" v-html="userMenuIconsHtml[menuItem.icon]" class="ww-dropdown-icon"></div>
+              <div v-else v-html="fallbackIcon" class="ww-dropdown-icon"></div>
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
@@ -154,7 +156,8 @@
                 class="ww-dropdown-item"
                 @click.stop="handleUserMenuClick(menuItem)"
               >
-                <div v-html="getIconHtml(menuItem.icon)" class="ww-dropdown-icon"></div>
+                <div v-if="userMenuIconsHtml[menuItem.icon]" v-html="userMenuIconsHtml[menuItem.icon]" class="ww-dropdown-icon"></div>
+                <div v-else v-html="fallbackIcon" class="ww-dropdown-icon"></div>
                 <span>{{ menuItem.label }}</span>
               </div>
               <div class="ww-dropdown-divider"></div>
@@ -288,6 +291,9 @@ export default {
       });
 
       return Object.values(sections);
+    },
+    fallbackIcon() {
+      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
     }
   },
 
@@ -415,15 +421,6 @@ export default {
           }
         }
       }
-    },
-    
-    getIconHtml(iconName) {
-      // Check menu icons
-      if (this.menuIconsHtml[iconName]) return this.menuIconsHtml[iconName];
-      // Check user menu icons
-      if (this.userMenuIconsHtml[iconName]) return this.userMenuIconsHtml[iconName];
-      // Fallback circle
-      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
     },
     
     getNavItemStyle(item) {
