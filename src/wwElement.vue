@@ -401,7 +401,7 @@ export default {
         for (const item of this.content.menuItems) {
           if (item.icon) {
             try {
-              this.$set(this.menuIconsHtml, item.icon, await getIcon(item.icon));
+              this.menuIconsHtml[item.icon] = await getIcon(item.icon);
             } catch (e) {
               console.error('Failed to load menu icon:', item.icon, e);
             }
@@ -414,7 +414,7 @@ export default {
         for (const item of this.content.userMenuItems) {
           if (item.icon) {
             try {
-              this.$set(this.userMenuIconsHtml, item.icon, await getIcon(item.icon));
+              this.userMenuIconsHtml[item.icon] = await getIcon(item.icon);
             } catch (e) {
               console.error('Failed to load user menu icon:', item.icon, e);
             }
