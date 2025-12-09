@@ -383,7 +383,7 @@ export default {
         try {
           this.staticIconsHtml[key] = await getIcon(iconPath);
         } catch (e) {
-          console.warn('Failed to load static icon:', key);
+          console.error('Failed to load static icon:', key, e);
         }
       }
       
@@ -392,7 +392,7 @@ export default {
         try {
           this.logoIconHtml = await getIcon(this.content.logoIcon);
         } catch (e) {
-          console.warn('Failed to load logo icon');
+          console.error('Failed to load logo icon:', this.content.logoIcon, e);
         }
       }
       
@@ -403,7 +403,7 @@ export default {
             try {
               this.$set(this.menuIconsHtml, item.icon, await getIcon(item.icon));
             } catch (e) {
-              console.warn('Failed to load menu icon:', item.icon);
+              console.error('Failed to load menu icon:', item.icon, e);
             }
           }
         }
@@ -416,7 +416,7 @@ export default {
             try {
               this.$set(this.userMenuIconsHtml, item.icon, await getIcon(item.icon));
             } catch (e) {
-              console.warn('Failed to load user menu icon:', item.icon);
+              console.error('Failed to load user menu icon:', item.icon, e);
             }
           }
         }
