@@ -317,7 +317,7 @@ export default {
           try {
             this.logoIconHtml = await getIcon(newVal);
           } catch (e) {
-            console.warn('Failed to load logo icon:', newVal);
+            console.error('Failed to load logo icon:', newVal, e);
           }
         }
       },
@@ -330,10 +330,9 @@ export default {
           for (const item of newVal) {
             if (item.icon) {
               try {
-                const html = await getIcon(item.icon);
-                this.$set(this.menuIconsHtml, item.icon, html);
+                this.menuIconsHtml[item.icon] = await getIcon(item.icon);
               } catch (e) {
-                console.warn('Failed to load menu icon:', item.icon);
+                console.error('Failed to load menu icon:', item.icon, e);
               }
             }
           }
@@ -349,10 +348,9 @@ export default {
           for (const item of newVal) {
             if (item.icon) {
               try {
-                const html = await getIcon(item.icon);
-                this.$set(this.userMenuIconsHtml, item.icon, html);
+                this.userMenuIconsHtml[item.icon] = await getIcon(item.icon);
               } catch (e) {
-                console.warn('Failed to load user menu icon:', item.icon);
+                console.error('Failed to load user menu icon:', item.icon, e);
               }
             }
           }
