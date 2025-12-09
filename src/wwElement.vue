@@ -303,6 +303,57 @@ export default {
         this.activeItemId = newVal;
       },
       immediate: true
+    },
+    'content.logoIcon': {
+      async handler(newVal) {
+        if (newVal) {
+          const { getIcon } = wwLib.useIcons();
+          try {
+            this.logoIconHtml = await getIcon(newVal);
+          } catch (e) {
+            console.warn('Failed to load logo icon:', newVal);
+          }
+        }
+      },
+      immediate: true
+    },
+    'content.menuItems': {
+      async handler(newVal) {
+        if (newVal && newVal.length) {
+          const { getIcon } = wwLib.useIcons();
+          for (const item of newVal) {
+            if (item.icon) {
+              try {
+                const html = await getIcon(item.icon);
+                this.$set(this.menuIconsHtml, item.icon, html);
+              } catch (e) {
+                console.warn('Failed to load menu icon:', item.icon);
+              }
+            }
+          }
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'content.userMenuItems': {
+      async handler(newVal) {
+        if (newVal && newVal.length) {
+          const { getIcon } = wwLib.useIcons();
+          for (const item of newVal) {
+            if (item.icon) {
+              try {
+                const html = await getIcon(item.icon);
+                this.$set(this.userMenuIconsHtml, item.icon, html);
+              } catch (e) {
+                console.warn('Failed to load user menu icon:', item.icon);
+              }
+            }
+          }
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
 
