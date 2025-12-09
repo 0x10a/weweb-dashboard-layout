@@ -6,7 +6,7 @@
       <div class="ww-sidebar-header">
         <div class="ww-logo-area">
           <img v-if="content.logoUrl" :src="content.logoUrl" alt="Logo" class="ww-logo-img" />
-          <Layers v-else :size="24" class="ww-logo-icon" :style="{ color: getIconColor(content.logoIcon, content.logoColor) }" />
+          <Layers v-else :size="24" class="ww-logo-icon" :style="{ color: content.logoColor }" />
           <span v-if="!isCollapsedState" class="ww-logo-text" :style="{ color: content.textColor }">
             {{ content.logoText }}
           </span>
@@ -27,7 +27,7 @@
               :style="getNavItemStyle(item)"
               @click="handleItemClick(item, index)"
             >
-              <component :is="getIconComponent(item.icon)" :size="18" class="ww-nav-icon" :style="{ color: getIconColor(item.icon, 'inherit') }" />
+              <component :is="getIconComponent(item.icon)" :size="18" class="ww-nav-icon" />
               <span v-if="!isCollapsedState" class="ww-nav-label">{{ item.label }}</span>
               <ChevronRight v-if="!isCollapsedState && item.children && item.children.length" :size="14" class="ww-nav-arrow" :class="{ 'ww-rotated': expandedItems.includes(item.id) }" />
               <span v-if="!isCollapsedState && item.badge" class="ww-nav-badge" :style="badgeStyle">
@@ -90,7 +90,7 @@
               class="ww-dropdown-item"
               @click.stop="handleUserMenuClick(menuItem)"
             >
-              <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" :style="{ color: getIconColor(menuItem.icon, '#64748b') }" />
+              <component :is="getIconComponent(menuItem.icon)" :size="16" class="ww-dropdown-icon" />
               <span>{{ menuItem.label }}</span>
             </div>
             <div class="ww-dropdown-divider"></div>
@@ -329,24 +329,13 @@ export default {
   },
 
   methods: {
-    getIconComponent(iconData) {
-      if (!iconData) return 'Circle';
+    getIconComponent(iconName) {
+      if (!iconName) return 'Circle';
       
-      // Handle WeWeb Icon object
-      let iconName = iconData;
-      if (typeof iconData === 'object' && iconData.icon) {
-        iconName = iconData.icon;
-      }
-      
-      // Remove prefixes like "lucide/" or "wwi wwi-"
+      // Remove prefixes like "lucide/"
       let name = iconName;
-      if (typeof name === 'string') {
-        if (name.includes('/')) {
-          name = name.split('/').pop();
-        }
-        if (name.startsWith('wwi wwi-')) {
-          name = name.replace('wwi wwi-', '');
-        }
+      if (typeof name === 'string' && name.includes('/')) {
+        name = name.split('/').pop();
       }
       
       // Map icon names to components
@@ -372,13 +361,6 @@ export default {
       };
       
       return iconMap[name] || 'Circle';
-    },
-    
-    getIconColor(iconData, fallbackColor) {
-      if (typeof iconData === 'object' && iconData.color) {
-        return iconData.color;
-      }
-      return fallbackColor;
     },
     
     getNavItemStyle(item) {
