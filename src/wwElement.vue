@@ -293,7 +293,7 @@ export default {
       return Object.values(sections);
     },
     fallbackIcon() {
-      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
+      return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
     }
   },
 
@@ -598,8 +598,15 @@ export default {
 }
 
 .ww-icon {
-  font-size: 24px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-icon :deep(svg) {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
 }
 
 .ww-logo-text {
@@ -648,7 +655,15 @@ export default {
 
 .ww-nav-icon {
   flex-shrink: 0;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-nav-icon :deep(svg) {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
 }
 
 .ww-nav-label {
@@ -852,7 +867,15 @@ export default {
 }
 
 .ww-dropdown-icon {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-dropdown-icon :deep(svg) {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
 }
 
 /* Collapsed State */
