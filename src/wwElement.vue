@@ -176,10 +176,68 @@
 </template>
 
 <script>
+import {
+  Layers,
+  LayoutDashboard,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  BarChart2,
+  Trello,
+  Circle,
+  User,
+  Bell,
+  LogOut,
+  Search,
+  Sun,
+  Settings,
+  PanelLeft,
+  MoreVertical,
+  ChevronRight,
+  Star,
+  Package,
+  FileText,
+  Calendar,
+  MessageSquare,
+  Briefcase,
+  Home,
+  Folder,
+  Heart,
+  Activity
+} from 'lucide-vue-next';
+
 export default {
   name: 'DashboardLayout',
 
-  components: {},
+  components: {
+    Layers,
+    LayoutDashboard,
+    ShoppingBag,
+    TrendingUp,
+    Users,
+    BarChart2,
+    Trello,
+    Circle,
+    User,
+    Bell,
+    LogOut,
+    Search,
+    Sun,
+    Settings,
+    PanelLeft,
+    MoreVertical,
+    ChevronRight,
+    Star,
+    Package,
+    FileText,
+    Calendar,
+    MessageSquare,
+    Briefcase,
+    Home,
+    Folder,
+    Heart,
+    Activity
+  },
 
   props: {
     content: {
