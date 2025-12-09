@@ -78,7 +78,7 @@ export default {
     },
     logoIcon: {
       label: { en: "Logo icon (if no URL)", fr: "Icône logo (si pas d'URL)" },
-      type: "LucideIcon",
+      type: "Text",
       section: "settings",
       defaultValue: "layers"
     },
@@ -130,7 +130,7 @@ export default {
               },
               icon: {
                 label: { en: "Icon" },
-                type: "LucideIcon"
+                type: "Text"
               },
               id: {
                 label: { en: "ID" },
@@ -192,7 +192,7 @@ export default {
           options: {
             item: {
               label: { label: { en: "Label", fr: "Label" }, type: "Text" },
-              icon: { label: { en: "Icon", fr: "Icône" }, type: "LucideIcon" },
+              icon: { label: { en: "Icon", fr: "Icône" }, type: "Text" },
               action: { label: { en: "Action", fr: "Action" }, type: "Text" }
             }
           }
@@ -400,5 +400,27 @@ export default {
       section: "settings",
       defaultValue: "12px"
     }
+  },
+
+  options: {
+    icons: [
+      'lucide/layers',
+      'lucide/layout-dashboard',
+      'lucide/shopping-bag',
+      'lucide/trending-up',
+      'lucide/users',
+      'lucide/bar-chart-2',
+      'lucide/trello',
+      'lucide/circle',
+      'lucide/user',
+      'lucide/bell',
+      'lucide/log-out',
+      'lucide/search',
+      'lucide/sun',
+      'lucide/settings',
+      'lucide/panel-left',
+      'lucide/more-vertical',
+      'lucide/chevron-right'
+    ]
   }
 };
