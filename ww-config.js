@@ -78,9 +78,9 @@ export default {
     },
     logoIcon: {
       label: { en: "Logo icon (if no URL)", fr: "Icône logo (si pas d'URL)" },
-      type: "Icon",
+      type: "SystemIcon",
       section: "settings",
-      defaultValue: "layers"
+      defaultValue: "lucide/layers"
     },
     logoText: {
       label: { en: "Logo text", fr: "Texte du logo" },
@@ -103,17 +103,17 @@ export default {
       section: "settings",
       bindable: true,
       defaultValue: [
-        { section: "Dashboards", label: "Default", route: "/dashboard", icon: "layout-dashboard", id: "default", badge: "" },
-        { section: "Dashboards", label: "E-commerce", route: "/ecommerce", icon: "shopping-bag", id: "ecommerce", badge: "" },
-        { section: "Dashboards", label: "Sales", route: "/sales", icon: "trending-up", id: "sales", badge: "" },
-        { section: "Dashboards", label: "CRM", route: "/crm", icon: "users", id: "crm", badge: "" },
-        { section: "Dashboards", label: "Website Analytics", route: "/analytics", icon: "bar-chart-2", id: "analytics", badge: "" },
-        { section: "Apps", label: "Kanban", route: "/kanban", icon: "trello", id: "kanban", badge: "New" }
+        { section: "Dashboards", label: "Default", route: "/dashboard", icon: "lucide/layout-dashboard", id: "default", badge: "" },
+        { section: "Dashboards", label: "E-commerce", route: "/ecommerce", icon: "lucide/shopping-bag", id: "ecommerce", badge: "" },
+        { section: "Dashboards", label: "Sales", route: "/sales", icon: "lucide/trending-up", id: "sales", badge: "" },
+        { section: "Dashboards", label: "CRM", route: "/crm", icon: "lucide/users", id: "crm", badge: "" },
+        { section: "Dashboards", label: "Website Analytics", route: "/analytics", icon: "lucide/bar-chart-2", id: "analytics", badge: "" },
+        { section: "Apps", label: "Kanban", route: "/kanban", icon: "lucide/trello", id: "kanban", badge: "New" }
       ],
       options: {
         item: {
           type: "Object",
-          defaultValue: { section: "", label: "Item", route: "/", icon: "circle", id: "", badge: "" },
+          defaultValue: { section: "", label: "Item", route: "/", icon: "lucide/circle", id: "", badge: "" },
           options: {
             item: {
               section: {
@@ -128,9 +128,9 @@ export default {
                 label: { en: "Route" },
                 type: "Text"
               },
-              icon: {
-                label: { en: "Icon" },
-                type: "Icon"
+              icon: { 
+                label: { en: "Icon" }, 
+                type: "SystemIcon"
               },
               id: {
                 label: { en: "ID" },
@@ -182,17 +182,17 @@ export default {
       section: "settings",
       bindable: true,
       defaultValue: [
-        { label: "Account", icon: "user", action: "account" },
-        { label: "Notifications", icon: "bell", action: "notifications" }
+        { label: "Account", icon: "lucide/user", action: "account" },
+        { label: "Notifications", icon: "lucide/bell", action: "notifications" }
       ],
       options: {
         item: {
           type: "Object",
-          defaultValue: { label: "Item", icon: "circle", action: "" },
+          defaultValue: { label: "Item", icon: "lucide/circle", action: "" },
           options: {
             item: {
               label: { label: { en: "Label", fr: "Label" }, type: "Text" },
-              icon: { label: { en: "Icon", fr: "Icône" }, type: "Icon" },
+              icon: { label: { en: "Icon", fr: "Icône" }, type: "SystemIcon" },
               action: { label: { en: "Action", fr: "Action" }, type: "Text" }
             }
           }
