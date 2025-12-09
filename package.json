@@ -1,14 +1,12 @@
 {
     "name": "weweb-dashboard-layout",
-    "version": "0.0.50",
+    "version": "0.0.51",
     "private": true,
     "scripts": {
         "serve": "weweb serve",
         "build": "weweb build"
     },
-    "dependencies": {
-        "lucide-vue-next": "^0.544.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@weweb/cli": "latest"
     }
