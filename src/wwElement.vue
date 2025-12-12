@@ -365,7 +365,7 @@ export default {
     async loadAllIcons() {
       const { getIcon } = wwLib.useIcons();
       
-      // Load static icons
+      // Load static icons (24px for topbar)
       const staticIcons = {
         'panelLeft': 'lucide/panel-left',
         'search': 'lucide/search',
@@ -595,22 +595,26 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.ww-logo-icon svg {
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .ww-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .ww-icon svg {
-  width: 24px !important;
-  height: 24px !important;
-  max-width: 24px;
-  max-height: 24px;
-  stroke-width: 2;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .ww-logo-text {
@@ -669,9 +673,6 @@ export default {
 .ww-nav-icon svg {
   width: 20px !important;
   height: 20px !important;
-  max-width: 20px;
-  max-height: 20px;
-  stroke-width: 2;
 }
 
 .ww-nav-label {
@@ -878,16 +879,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .ww-dropdown-icon svg {
-  width: 18px !important;
-  height: 18px !important;
-  max-width: 18px;
-  max-height: 18px;
-  stroke-width: 2;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 /* Collapsed State */
