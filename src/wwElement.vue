@@ -541,6 +541,13 @@ export default {
 /* ========== GLOBAL SVG CONTROL ========== */
 .ww-dashboard-layout svg {
   display: block;
+  box-sizing: border-box !important;
+}
+
+/* Force SVG viewBox to respect container size */
+.ww-dashboard-layout svg[viewBox] {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ========== LAYOUT ========== */
@@ -603,6 +610,7 @@ export default {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .ww-logo-icon svg {
@@ -612,6 +620,8 @@ export default {
   max-height: 28px !important;
   min-width: 28px !important;
   min-height: 28px !important;
+  transform: scale(1) !important;
+  transform-origin: center !important;
 }
 
 .ww-icon {
@@ -620,6 +630,7 @@ export default {
   justify-content: center;
   width: 24px;
   height: 24px;
+  overflow: hidden;
 }
 
 .ww-icon svg {
@@ -630,6 +641,8 @@ export default {
   min-width: 24px !important;
   min-height: 24px !important;
   stroke-width: 2 !important;
+  transform: scale(1) !important;
+  transform-origin: center !important;
 }
 
 .ww-logo-text {
@@ -683,6 +696,7 @@ export default {
   justify-content: center;
   width: 20px;
   height: 20px;
+  overflow: hidden;
 }
 
 .ww-nav-icon svg {
@@ -693,6 +707,8 @@ export default {
   min-width: 20px !important;
   min-height: 20px !important;
   stroke-width: 2 !important;
+  transform: scale(1) !important;
+  transform-origin: center !important;
 }
 
 .ww-nav-label {
@@ -901,6 +917,7 @@ export default {
   justify-content: center;
   width: 18px;
   height: 18px;
+  overflow: hidden;
 }
 
 .ww-dropdown-icon svg {
@@ -911,6 +928,8 @@ export default {
   min-width: 18px !important;
   min-height: 18px !important;
   stroke-width: 2 !important;
+  transform: scale(1) !important;
+  transform-origin: center !important;
 }
 
 /* Collapsed State */
