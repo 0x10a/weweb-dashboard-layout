@@ -315,7 +315,8 @@ export default {
         if (newVal) {
           const { getIcon } = wwLib.useIcons();
           try {
-            this.logoIconHtml = await getIcon(newVal);
+            const svg = await getIcon(newVal);
+            this.logoIconHtml = this.resizeSvg(svg, 20, 20);
           } catch (e) {
             console.error('Failed to load logo icon:', newVal, e);
           }
@@ -330,7 +331,8 @@ export default {
           for (const item of newVal) {
             if (item.icon) {
               try {
-                this.menuIconsHtml[item.icon] = await getIcon(item.icon);
+                const svg = await getIcon(item.icon);
+                this.menuIconsHtml[item.icon] = this.resizeSvg(svg, 20, 20);
               } catch (e) {
                 console.error('Failed to load menu icon:', item.icon, e);
               }
@@ -348,7 +350,8 @@ export default {
           for (const item of newVal) {
             if (item.icon) {
               try {
-                this.userMenuIconsHtml[item.icon] = await getIcon(item.icon);
+                const svg = await getIcon(item.icon);
+                this.userMenuIconsHtml[item.icon] = this.resizeSvg(svg, 20, 20);
               } catch (e) {
                 console.error('Failed to load user menu icon:', item.icon, e);
               }
@@ -362,6 +365,12 @@ export default {
   },
 
   methods: {
+    resizeSvg(svgHtml, width, height) {
+      if (!svgHtml) return svgHtml;
+      return svgHtml
+        .replace(/width="[^"]*"/g, `width="${width}"`)
+        .replace(/height="[^"]*"/g, `height="${height}"`);
+    },
     async loadAllIcons() {
       const { getIcon } = wwLib.useIcons();
       
@@ -379,7 +388,8 @@ export default {
       
       for (const [key, iconPath] of Object.entries(staticIcons)) {
         try {
-          this.staticIconsHtml[key] = await getIcon(iconPath);
+          const svg = await getIcon(iconPath);
+          this.staticIconsHtml[key] = this.resizeSvg(svg, 20, 20);
         } catch (e) {
           console.error('Failed to load static icon:', key, e);
         }
@@ -388,7 +398,8 @@ export default {
       // Load logo icon
       if (this.content.logoIcon) {
         try {
-          this.logoIconHtml = await getIcon(this.content.logoIcon);
+          const svg = await getIcon(this.content.logoIcon);
+          this.logoIconHtml = this.resizeSvg(svg, 20, 20);
         } catch (e) {
           console.error('Failed to load logo icon:', this.content.logoIcon, e);
         }
@@ -399,7 +410,8 @@ export default {
         for (const item of this.content.menuItems) {
           if (item.icon) {
             try {
-              this.menuIconsHtml[item.icon] = await getIcon(item.icon);
+              const svg = await getIcon(item.icon);
+              this.menuIconsHtml[item.icon] = this.resizeSvg(svg, 20, 20);
             } catch (e) {
               console.error('Failed to load menu icon:', item.icon, e);
             }
@@ -412,7 +424,8 @@ export default {
         for (const item of this.content.userMenuItems) {
           if (item.icon) {
             try {
-              this.userMenuIconsHtml[item.icon] = await getIcon(item.icon);
+              const svg = await getIcon(item.icon);
+              this.userMenuIconsHtml[item.icon] = this.resizeSvg(svg, 20, 20);
             } catch (e) {
               console.error('Failed to load user menu icon:', item.icon, e);
             }
