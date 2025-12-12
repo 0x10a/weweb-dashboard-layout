@@ -172,7 +172,7 @@
 
       <!-- Content Area (WeWeb Drop Zone) -->
       <main class="ww-content-area" :style="contentAreaStyle">
-        <wwLayout :path="`${uid}-content`"></wwLayout>
+        <wwLayout path="dashboardContent"></wwLayout>
       </main>
     </div>
   </div>
