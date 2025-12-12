@@ -538,6 +538,11 @@ export default {
 </script>
 
 <style scoped>
+/* ========== GLOBAL SVG CONTROL ========== */
+.ww-dashboard-layout svg {
+  display: block;
+}
+
 /* ========== LAYOUT ========== */
 .ww-dashboard-layout {
   display: grid !important;
@@ -595,6 +600,18 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.ww-logo-icon svg {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
 }
 
 .ww-icon {
@@ -608,9 +625,11 @@ export default {
 .ww-icon svg {
   width: 24px !important;
   height: 24px !important;
-  max-width: 24px;
-  max-height: 24px;
-  stroke-width: 2;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  stroke-width: 2 !important;
 }
 
 .ww-logo-text {
@@ -669,9 +688,11 @@ export default {
 .ww-nav-icon svg {
   width: 20px !important;
   height: 20px !important;
-  max-width: 20px;
-  max-height: 20px;
-  stroke-width: 2;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  stroke-width: 2 !important;
 }
 
 .ww-nav-label {
@@ -885,9 +906,11 @@ export default {
 .ww-dropdown-icon svg {
   width: 18px !important;
   height: 18px !important;
-  max-width: 18px;
-  max-height: 18px;
-  stroke-width: 2;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  stroke-width: 2 !important;
 }
 
 /* Collapsed State */
