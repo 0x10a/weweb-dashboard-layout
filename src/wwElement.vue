@@ -114,16 +114,20 @@
             <div v-html="staticIconsHtml.panelLeft"></div>
           </button>
 
-          <div v-if="content.showSearch" class="ww-search-container" :style="searchContainerStyle">
-            <div v-html="staticIconsHtml.search" class="ww-search-icon"></div>
-            <input
-              type="text"
-              :placeholder="content.searchPlaceholder"
-              class="ww-search-input"
-              v-model="searchQuery"
-              @input="handleSearch"
-            />
-          </div>
+          <!-- Breadcrumb -->
+          <nav v-if="content.showBreadcrumb" class="ww-breadcrumb">
+            <div v-for="(item, index) in breadcrumbItems" :key="index" class="ww-breadcrumb-wrapper">
+              <a 
+                :href="item.route" 
+                class="ww-breadcrumb-item"
+                :class="{ 'ww-breadcrumb-active': index === breadcrumbItems.length - 1 }"
+                @click.prevent="handleBreadcrumbClick(item, index)"
+              >
+                {{ item.label }}
+              </a>
+              <div v-if="index < breadcrumbItems.length - 1" v-html="staticIconsHtml.chevronRight" class="ww-breadcrumb-separator"></div>
+            </div>
+          </nav>
         </div>
 
         <div class="ww-topbar-right">
@@ -222,7 +226,6 @@ export default {
       showUserMenu: false,
       showTopbarMenu: false,
       showLanguageMenu: false,
-      searchQuery: '',
       // Icon HTML cache
       logoIconHtml: null,
       menuIconsHtml: {},
@@ -274,11 +277,6 @@ export default {
         borderTopLeftRadius: this.content.contentBorderRadius || '12px'
       };
     },
-    searchContainerStyle() {
-      return {
-        backgroundColor: this.content.searchBgColor || '#f1f5f9'
-      };
-    },
     badgeStyle() {
       return {
         backgroundColor: this.content.badgeBgColor || '#0f172a',
@@ -315,6 +313,9 @@ export default {
     },
     fallbackIcon() {
       return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
+    },
+    breadcrumbItems() {
+      return this.content.breadcrumbItems || [];
     }
   },
 
@@ -528,10 +529,10 @@ export default {
       });
     },
     
-    handleSearch() {
+    handleBreadcrumbClick(item, index) {
       this.$emit('trigger-event', {
-        name: 'search',
-        event: { query: this.searchQuery }
+        name: 'breadcrumb-click',
+        event: { item, index, route: item.route }
       });
     },
     
@@ -1005,32 +1006,47 @@ export default {
   border: 2px solid #fff;
 }
 
-.ww-search-container {
+/* Breadcrumb */
+.ww-breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  min-width: 280px;
 }
 
-.ww-search-icon {
-  color: #94a3b8;
-  flex-shrink: 0;
+.ww-breadcrumb-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ww-breadcrumb-item {
   font-size: 14px;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s;
+  cursor: pointer;
 }
 
-.ww-search-input {
-  flex: 1;
-  border: none;
-  background: none;
-  outline: none;
-  font-size: 13px;
+.ww-breadcrumb-item:hover {
   color: #0f172a;
 }
 
-.ww-search-input::placeholder {
-  color: #94a3b8;
+.ww-breadcrumb-item.ww-breadcrumb-active {
+  color: #0f172a;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.ww-breadcrumb-separator {
+  display: flex;
+  align-items: center;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.ww-breadcrumb-separator svg {
+  width: 16px !important;
+  height: 16px !important;
 }
 
 .ww-topbar-right {

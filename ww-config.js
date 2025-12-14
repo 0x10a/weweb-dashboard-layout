@@ -40,9 +40,9 @@ export default {
       event: {}
     },
     {
-      name: "search",
-      label: { en: "On search", fr: "A la recherche" },
-      event: { query: "" }
+      name: "breadcrumb-click",
+      label: { en: "On breadcrumb click", fr: "Au clic sur breadcrumb" },
+      event: { item: {}, index: 0, route: "" }
     },
     {
       name: "notification-click",
@@ -247,17 +247,44 @@ export default {
       section: "settings",
       defaultValue: true
     },
-    showSearch: {
-      label: { en: "Show search", fr: "Afficher recherche" },
+    showBreadcrumb: {
+      label: { en: "Show breadcrumb", fr: "Afficher breadcrumb" },
       type: "OnOff",
       section: "settings",
       defaultValue: true
     },
-    searchPlaceholder: {
-      label: { en: "Search placeholder", fr: "Placeholder recherche" },
-      type: "Text",
+    breadcrumbItems: {
+      label: { en: "Breadcrumb items", fr: "Items du breadcrumb" },
+      type: "Array",
       section: "settings",
-      defaultValue: "Search..."
+      bindable: true,
+      defaultValue: [
+        { label: "Home", route: "/", id: "home" },
+        { label: "Événements", route: "/events", id: "events" },
+        { label: "Liste des événements", route: "/events/list", id: "events-list" }
+      ],
+      options: {
+        item: {
+          type: "Object",
+          defaultValue: { label: "Item", route: "/", id: "" },
+          options: {
+            item: {
+              label: {
+                label: { en: "Label" },
+                type: "Text"
+              },
+              route: {
+                label: { en: "Route" },
+                type: "Text"
+              },
+              id: {
+                label: { en: "ID" },
+                type: "Text"
+              }
+            }
+          }
+        }
+      }
     },
     showNotifications: {
       label: { en: "Show notifications", fr: "Afficher notifications" },
