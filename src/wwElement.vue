@@ -490,11 +490,6 @@ export default {
           name: 'menu-item-click',
           event: { item, index, route: item.route || '' }
         });
-        
-        // Navigation automatique si route définie
-        if (item.route) {
-          wwLib.goTo(item.route);
-        }
       }
     },
     
@@ -504,11 +499,6 @@ export default {
         name: 'menu-item-click',
         event: { item: child, index, route: child.route || '' }
       });
-      
-      // Navigation automatique si route définie
-      if (child.route) {
-        wwLib.goTo(child.route);
-      }
     },
     
     toggleUserMenu() {
@@ -549,11 +539,6 @@ export default {
         name: 'breadcrumb-click',
         event: { item, index, route: item.route }
       });
-      
-      // Navigation automatique si route définie
-      if (item.route) {
-        wwLib.goTo(item.route);
-      }
     },
     
     handleNotificationClick() {
