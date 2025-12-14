@@ -137,6 +137,25 @@
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
             <div v-html="staticIconsHtml.settings"></div>
           </button>
+          
+          <!-- Language Switcher -->
+          <div v-if="content.showLanguageSwitcher" class="ww-language-switcher">
+            <button class="ww-topbar-btn" @click="showLanguageMenu = !showLanguageMenu">
+              <div v-html="staticIconsHtml.languages"></div>
+            </button>
+            
+            <div v-if="showLanguageMenu" class="ww-language-dropdown">
+              <div class="ww-language-item" @click.stop="handleLanguageChange('fr')">
+                <span class="ww-language-flag">🇫🇷</span>
+                <span>Français</span>
+              </div>
+              <div class="ww-language-item" @click.stop="handleLanguageChange('en')">
+                <span class="ww-language-flag">🇬🇧</span>
+                <span>English</span>
+              </div>
+            </div>
+          </div>
+          
           <div class="ww-topbar-profile" @click="showTopbarMenu = !showTopbarMenu">
             <img :src="content.userAvatar" alt="User" class="ww-topbar-avatar" />
 
@@ -202,6 +221,7 @@ export default {
       expandedItems: [],
       showUserMenu: false,
       showTopbarMenu: false,
+      showLanguageMenu: false,
       searchQuery: '',
       // Icon HTML cache
       logoIconHtml: null,
@@ -215,7 +235,8 @@ export default {
         settings: null,
         moreVertical: null,
         logOut: null,
-        chevronRight: null
+        chevronRight: null,
+        languages: null
       }
     };
   },
@@ -374,7 +395,8 @@ export default {
         'settings': 'lucide/settings',
         'moreVertical': 'lucide/more-vertical',
         'logOut': 'lucide/log-out',
-        'chevronRight': 'lucide/chevron-right'
+        'chevronRight': 'lucide/chevron-right',
+        'languages': 'lucide/languages'
       };
       
       for (const [key, iconPath] of Object.entries(staticIcons)) {
@@ -531,6 +553,14 @@ export default {
       this.$emit('trigger-event', {
         name: 'settings-click',
         event: {}
+      });
+    },
+    
+    handleLanguageChange(language) {
+      this.showLanguageMenu = false;
+      this.$emit('trigger-event', {
+        name: 'language-change',
+        event: { language }
       });
     }
   }
@@ -1033,6 +1063,43 @@ export default {
   padding: 8px 0;
   z-index: 1000;
   min-width: 220px;
+}
+
+/* Language Switcher */
+.ww-language-switcher {
+  position: relative;
+}
+
+.ww-language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  margin-top: 8px;
+  padding: 4px 0;
+  z-index: 1000;
+  min-width: 160px;
+}
+
+.ww-language-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: #0f172a;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ww-language-item:hover {
+  background: #f8fafc;
+}
+
+.ww-language-flag {
+  font-size: 18px;
 }
 
 /* ========== CONTENT AREA ========== */

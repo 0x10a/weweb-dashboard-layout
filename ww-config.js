@@ -58,6 +58,11 @@ export default {
       name: "settings-click",
       label: { en: "On settings click", fr: "Au clic paramètres" },
       event: {}
+    },
+    {
+      name: "language-change",
+      label: { en: "On language change", fr: "Au changement de langue" },
+      event: { language: "" }
     }
   ],
 
@@ -274,7 +279,13 @@ export default {
       defaultValue: true
     },
     showSettings: {
-      label: { en: "Show settings button", fr: "Afficher bouton paramètres" },
+      label: { en: "Show settings button", fr: "Afficher paramètres" },
+      type: "OnOff",
+      section: "settings",
+      defaultValue: true
+    },
+    showLanguageSwitcher: {
+      label: { en: "Show language switcher", fr: "Afficher sélecteur de langue" },
       type: "OnOff",
       section: "settings",
       defaultValue: true
