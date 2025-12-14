@@ -223,21 +223,28 @@ export default {
       type: "Text",
       section: "settings",
       bindable: true,
-      defaultValue: "Download"
+      defaultValue: "Open Source"
     },
     promoDescription: {
       label: { en: "Promo description", fr: "Description promo" },
       type: "Text",
       section: "settings",
       bindable: true,
-      defaultValue: "Unlock lifetime access to all dashboards, templates and components."
+      defaultValue: "This dashboard layout is free and open source. Star us on GitHub!"
     },
     promoButtonText: {
       label: { en: "Promo button text", fr: "Texte bouton promo" },
       type: "Text",
       section: "settings",
       bindable: true,
-      defaultValue: "Get Shadcn UI Kit"
+      defaultValue: "⭐ Star on GitHub"
+    },
+    promoButtonUrl: {
+      label: { en: "Promo button URL", fr: "URL bouton promo" },
+      type: "Text",
+      section: "settings",
+      bindable: true,
+      defaultValue: "https://github.com/0x10a/weweb-dashboard-layout"
     },
 
     // ========== TOPBAR ==========

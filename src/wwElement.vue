@@ -525,9 +525,12 @@ export default {
     },
     
     handlePromoClick() {
+      if (this.content.promoButtonUrl) {
+        window.open(this.content.promoButtonUrl, '_blank');
+      }
       this.$emit('trigger-event', {
         name: 'promo-click',
-        event: {}
+        event: { url: this.content.promoButtonUrl }
       });
     },
     
@@ -933,8 +936,7 @@ export default {
 .ww-sidebar.ww-collapsed .ww-nav-badge,
 .ww-sidebar.ww-collapsed .ww-nav-submenu,
 .ww-sidebar.ww-collapsed .ww-promo-card,
-.ww-sidebar.ww-collapsed .ww-user-info,
-.ww-sidebar.ww-collapsed .ww-user-menu-btn {
+.ww-sidebar.ww-collapsed .ww-user-info {
   display: none;
 }
 
