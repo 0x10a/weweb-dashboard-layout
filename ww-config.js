@@ -103,12 +103,11 @@ export default {
       section: "settings",
       bindable: true,
       defaultValue: [
-        { section: "Dashboards", label: "Default", route: "/dashboard", icon: "lucide/layout-dashboard", id: "default", badge: "" },
-        { section: "Dashboards", label: "E-commerce", route: "/ecommerce", icon: "lucide/shopping-bag", id: "ecommerce", badge: "" },
-        { section: "Dashboards", label: "Sales", route: "/sales", icon: "lucide/trending-up", id: "sales", badge: "" },
-        { section: "Dashboards", label: "CRM", route: "/crm", icon: "lucide/users", id: "crm", badge: "" },
-        { section: "Dashboards", label: "Website Analytics", route: "/analytics", icon: "lucide/bar-chart-2", id: "analytics", badge: "" },
-        { section: "Apps", label: "Kanban", route: "/kanban", icon: "lucide/trello", id: "kanban", badge: "New" }
+        { section: "ÉVÉNEMENTS", label: "Liste des événements", route: "/events", icon: "lucide/calendar", id: "events-list", badge: "" },
+        { section: "ÉVÉNEMENTS", label: "Créer un événement", route: "/events/new", icon: "lucide/calendar-plus", id: "events-create", badge: "" },
+        { section: "ÉVÉNEMENTS", label: "Kanban", route: "/kanban", icon: "lucide/kanban-square", id: "kanban", badge: "New" },
+        { section: "TÂCHES", label: "Gérer les tâches", route: "/tasks", icon: "lucide/list-checks", id: "tasks", badge: "" },
+        { section: "ÉQUIPE", label: "Gestion des utilisateurs", route: "/users", icon: "lucide/users", id: "users", badge: "" }
       ],
       options: {
         item: {
@@ -151,7 +150,7 @@ export default {
       type: "Text",
       section: "settings",
       bindable: true,
-      defaultValue: "default"
+      defaultValue: "events-list"
     },
 
     // ========== USER SECTION ==========
