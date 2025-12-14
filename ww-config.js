@@ -129,8 +129,8 @@ export default {
                 type: "Text"
               },
               route: {
-                label: { en: "Route" },
-                type: "Text"
+                label: { en: "Page" },
+                type: "Page"
               },
               icon: { 
                 label: { en: "Icon" }, 
@@ -281,8 +281,8 @@ export default {
                 type: "Text"
               },
               route: {
-                label: { en: "Route" },
-                type: "Text"
+                label: { en: "Page" },
+                type: "Page"
               },
               id: {
                 label: { en: "ID" },
