@@ -551,6 +551,9 @@ export default {
 .ww-sidebar {
   grid-column: 1;
   min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
   transition: width 0.2s ease;
@@ -718,12 +721,9 @@ export default {
 
 /* Footer */
 .ww-sidebar-footer {
-  position: sticky;
-  bottom: 0;
   margin-top: auto;
   padding: 12px;
   background: inherit;
-  z-index: 10;
 }
 
 /* Promo Card */
