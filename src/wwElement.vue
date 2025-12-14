@@ -718,8 +718,12 @@ export default {
 
 /* Footer */
 .ww-sidebar-footer {
+  position: sticky;
+  bottom: 0;
   margin-top: auto;
   padding: 12px;
+  background: inherit;
+  z-index: 10;
 }
 
 /* Promo Card */
