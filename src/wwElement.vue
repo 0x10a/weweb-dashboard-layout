@@ -111,7 +111,7 @@
       <header v-if="content.showTopbar" class="ww-topbar" :style="topbarStyle">
         <div class="ww-topbar-left">
           <button v-if="content.allowCollapse" class="ww-topbar-btn" @click="toggleCollapse">
-            <div v-html="staticIconsHtml.panelLeft"></div>
+            <div class="ww-icon-wrapper" v-html="staticIconsHtml.panelLeft"></div>
           </button>
 
           <!-- Breadcrumb -->
@@ -125,27 +125,29 @@
               >
                 {{ item.label }}
               </a>
-              <div v-if="index < breadcrumbItems.length - 1" v-html="staticIconsHtml.chevronRight" class="ww-breadcrumb-separator"></div>
+              <div v-if="index < breadcrumbItems.length - 1" class="ww-breadcrumb-separator">
+                <div class="ww-icon-wrapper" v-html="staticIconsHtml.chevronRight"></div>
+              </div>
             </div>
           </nav>
         </div>
 
         <div class="ww-topbar-right">
           <button v-if="content.showNotifications" class="ww-topbar-btn ww-notification" @click="handleNotificationClick">
-            <div v-html="staticIconsHtml.bell"></div>
+            <div class="ww-icon-wrapper" v-html="staticIconsHtml.bell"></div>
             <span v-if="content.notificationCount > 0" class="ww-notification-badge"></span>
           </button>
           <button v-if="content.showThemeToggle" class="ww-topbar-btn" @click="handleThemeToggle">
-            <div v-html="staticIconsHtml.sun"></div>
+            <div class="ww-icon-wrapper" v-html="staticIconsHtml.sun"></div>
           </button>
           <button v-if="content.showSettings" class="ww-topbar-btn" @click="handleSettingsClick">
-            <div v-html="staticIconsHtml.settings"></div>
+            <div class="ww-icon-wrapper" v-html="staticIconsHtml.settings"></div>
           </button>
           
           <!-- Language Switcher -->
           <div v-if="content.showLanguageSwitcher" class="ww-language-switcher">
             <button class="ww-topbar-btn" @click="showLanguageMenu = !showLanguageMenu">
-              <div v-html="staticIconsHtml.languages"></div>
+              <div class="ww-icon-wrapper" v-html="staticIconsHtml.languages"></div>
             </button>
             
             <div v-if="showLanguageMenu" class="ww-language-dropdown">
@@ -976,6 +978,15 @@ export default {
   gap: 16px;
 }
 
+.ww-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
 .ww-topbar-btn {
   position: relative;
   background: none;
@@ -1041,7 +1052,11 @@ export default {
   display: flex;
   align-items: center;
   color: #cbd5e1;
-  font-size: 14px;
+}
+
+.ww-breadcrumb-separator .ww-icon-wrapper {
+  width: 16px;
+  height: 16px;
 }
 
 .ww-breadcrumb-separator svg {
