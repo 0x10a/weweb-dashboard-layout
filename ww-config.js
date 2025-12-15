@@ -166,6 +166,13 @@ export default {
       bindable: true,
       defaultValue: "Toby Belhome"
     },
+    userAccountType: {
+      label: { en: "Account type", fr: "Type de compte" },
+      type: "Text",
+      section: "settings",
+      bindable: true,
+      defaultValue: "Premium"
+    },
     userEmail: {
       label: { en: "User email", fr: "Email utilisateur" },
       type: "Text",

@@ -70,7 +70,10 @@
         <div class="ww-user-section" @click="toggleUserMenu">
           <img :src="content.userAvatar" alt="User" class="ww-user-avatar" />
           <div v-if="!isCollapsedState" class="ww-user-info">
-            <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
+            <div class="ww-user-name-row">
+              <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
+              <span v-if="content.userAccountType" class="ww-user-account-type" :style="{ color: content.mutedTextColor }">• {{ content.userAccountType }}</span>
+            </div>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
           <div v-if="!isCollapsedState" v-html="staticIconsHtml.moreVertical" class="ww-user-menu-btn" :style="{ color: content.mutedTextColor }"></div>
@@ -830,10 +833,21 @@ export default {
   min-width: 0;
 }
 
+.ww-user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .ww-user-name {
-  display: block;
   font-size: 13px;
   font-weight: 500;
+}
+
+.ww-user-account-type {
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
 .ww-user-email {
