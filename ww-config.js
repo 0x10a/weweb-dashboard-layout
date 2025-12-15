@@ -122,13 +122,11 @@ export default {
             item: {
               section: {
                 label: { en: "Section" },
-                type: "Text",
-                multiLang: true
+                type: "Text"
               },
               label: {
                 label: { en: "Label" },
-                type: "Text",
-                multiLang: true
+                type: "Text"
               },
               route: {
                 label: { en: "Route" },
@@ -144,8 +142,7 @@ export default {
               },
               badge: {
                 label: { en: "Badge" },
-                type: "Text",
-                multiLang: true
+                type: "Text"
               }
             }
           }
@@ -198,7 +195,7 @@ export default {
           defaultValue: { label: "Item", icon: "lucide/circle", action: "" },
           options: {
             item: {
-              label: { label: { en: "Label", fr: "Label" }, type: "Text", multiLang: true },
+              label: { label: { en: "Label", fr: "Label" }, type: "Text" },
               icon: { label: { en: "Icon", fr: "Icône" }, type: "SystemIcon" },
               action: { label: { en: "Action", fr: "Action" }, type: "Text" }
             }
