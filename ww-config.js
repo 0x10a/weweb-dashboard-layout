@@ -108,16 +108,58 @@ export default {
       section: "settings",
       bindable: true,
       defaultValue: [
-        { section: "ÉVÉNEMENTS", label: "Liste des événements", route: "/events", icon: "lucide/calendar", id: "events-list", badge: "" },
-        { section: "ÉVÉNEMENTS", label: "Créer un événement", route: "/events/new", icon: "lucide/calendar-plus", id: "events-create", badge: "" },
-        { section: "ÉVÉNEMENTS", label: "Kanban", route: "/kanban", icon: "lucide/kanban-square", id: "kanban", badge: "New" },
-        { section: "TÂCHES", label: "Gérer les tâches", route: "/tasks", icon: "lucide/list-checks", id: "tasks", badge: "" },
-        { section: "ÉQUIPE", label: "Gestion des utilisateurs", route: "/users", icon: "lucide/users", id: "users", badge: "" }
+        { 
+          section: { en: "EVENTS", fr: "ÉVÉNEMENTS" }, 
+          label: { en: "Events list", fr: "Liste des événements" }, 
+          route: "/events", 
+          icon: "lucide/calendar", 
+          id: "events-list", 
+          badge: { en: "", fr: "" } 
+        },
+        { 
+          section: { en: "EVENTS", fr: "ÉVÉNEMENTS" }, 
+          label: { en: "Create event", fr: "Créer un événement" }, 
+          route: "/events/new", 
+          icon: "lucide/calendar-plus", 
+          id: "events-create", 
+          badge: { en: "", fr: "" } 
+        },
+        { 
+          section: { en: "EVENTS", fr: "ÉVÉNEMENTS" }, 
+          label: { en: "Kanban", fr: "Kanban" }, 
+          route: "/kanban", 
+          icon: "lucide/kanban-square", 
+          id: "kanban", 
+          badge: { en: "New", fr: "Nouveau" } 
+        },
+        { 
+          section: { en: "TASKS", fr: "TÂCHES" }, 
+          label: { en: "Manage tasks", fr: "Gérer les tâches" }, 
+          route: "/tasks", 
+          icon: "lucide/list-checks", 
+          id: "tasks", 
+          badge: { en: "", fr: "" } 
+        },
+        { 
+          section: { en: "TEAM", fr: "ÉQUIPE" }, 
+          label: { en: "User management", fr: "Gestion des utilisateurs" }, 
+          route: "/users", 
+          icon: "lucide/users", 
+          id: "users", 
+          badge: { en: "", fr: "" } 
+        }
       ],
       options: {
         item: {
           type: "Object",
-          defaultValue: { section: "", label: "Item", route: "/", icon: "lucide/circle", id: "", badge: "" },
+          defaultValue: { 
+            section: { en: "", fr: "" }, 
+            label: { en: "Item", fr: "Item" }, 
+            route: "/", 
+            icon: "lucide/circle", 
+            id: "", 
+            badge: { en: "", fr: "" } 
+          },
           options: {
             item: {
               section: {
@@ -186,13 +228,13 @@ export default {
       section: "settings",
       bindable: true,
       defaultValue: [
-        { label: "Account", icon: "lucide/user", action: "account" },
-        { label: "Notifications", icon: "lucide/bell", action: "notifications" }
+        { label: { en: "Account", fr: "Compte" }, icon: "lucide/user", action: "account" },
+        { label: { en: "Notifications", fr: "Notifications" }, icon: "lucide/bell", action: "notifications" }
       ],
       options: {
         item: {
           type: "Object",
-          defaultValue: { label: "Item", icon: "lucide/circle", action: "" },
+          defaultValue: { label: { en: "Item", fr: "Item" }, icon: "lucide/circle", action: "" },
           options: {
             item: {
               label: { label: { en: "Label", fr: "Label" }, type: "Text" },
