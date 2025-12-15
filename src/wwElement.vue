@@ -72,7 +72,7 @@
           <div v-if="!isCollapsedState" class="ww-user-info">
             <div class="ww-user-name-row">
               <span class="ww-user-name" :style="{ color: content.textColor }">{{ content.userName }}</span>
-              <span v-if="content.userAccountType" class="ww-user-account-type" :style="{ color: content.mutedTextColor }">• {{ content.userAccountType }}</span>
+              <span v-if="content.userAccountType" class="ww-user-account-badge">{{ content.userAccountType }}</span>
             </div>
             <span class="ww-user-email" :style="{ color: content.mutedTextColor }">{{ content.userEmail }}</span>
           </div>
@@ -836,7 +836,7 @@ export default {
 .ww-user-name-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .ww-user-name {
@@ -844,10 +844,17 @@ export default {
   font-weight: 500;
 }
 
-.ww-user-account-type {
-  font-size: 11px;
-  font-weight: 400;
+.ww-user-account-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  background: #000;
+  color: #fff;
+  border-radius: 4px;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .ww-user-email {
